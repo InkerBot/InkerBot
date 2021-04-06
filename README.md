@@ -1,16 +1,34 @@
-### Hi there 👋
+### InkerBot, a bot.
 
-<!--
-**InkerBot/InkerBot** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+### How to reach me?
 
-Here are some ideas to get you started:
+- [BiliBili](https://space.bilibili.com/609300926/)
+- Discord  InkerBot#6203
+- [Github](https://github.com/InkerBot)
+- [QQ](https://wpa.qq.com/msgrd?v=3&uin=2924657226&site=Github&menu=yes&from=InkerBot)
+- [Telegram](https://t.me/InkWeekly)
+- [Twitter](https://twitter.com/InkerBot)
+- [ZhiHu](http://www.zhihu.com/people/mo-shui-ping-official)
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+### I could do what?
+
+- PHP
+- - laravel
+- - adminer (a framework for cli-php)
+- JAVA
+- - PHP formt JAVA (Sorry for it)
+- - Minecraft
+- C++
+- - learning
+
+### In progress
+
+- SodionAuth
+- - Add forge support
+- - Reformat core
+- FastLogin
+- - Add SodionAuth support
+- Learning
+- - Learning c++
+- Video
+- - Trying to get some fans

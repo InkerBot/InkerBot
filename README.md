@@ -21,6 +21,13 @@
 - C++
 - - learning
 
+### Sorry for there
+
+- Poor English
+- Poor aesthetics
+- Can't describle self correctly
+- Can't realize what others say correctly
+
 ### In progress
 
 - SodionAuth

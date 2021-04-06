@@ -21,7 +21,7 @@
 - C++
 - - learning
 
-### Sorry for there
+### Sorry for these
 
 - Poor English
 - Poor aesthetics

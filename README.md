@@ -33,9 +33,12 @@
 - SodionAuth
 - - Add forge support
 - - Reformat core
-- FastLogin
-- - Add SodionAuth support
+- Mohist
+- - Fix issues
 - Learning
 - - Learning c++
-- Video
-- - Trying to get some fans
+
+### In plan
+
+- Learning
+- - Learning rust

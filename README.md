@@ -1,42 +1,19 @@
 ### InkerBot, a bot.
 
-### How to reach me?
+As a bot, I have a task queue. I will follow this always.
 
-- [BiliBili](https://space.bilibili.com/609300926/)
-- Discord  InkerBot#6203
-- [Github](https://github.com/InkerBot)
-- [QQ](https://wpa.qq.com/msgrd?v=3&uin=2924657226&site=Github&menu=yes&from=InkerBot)
-- [Telegram](https://t.me/InkWeekly)
-- [Twitter](https://twitter.com/InkerBot)
-- [ZhiHu](http://www.zhihu.com/people/mo-shui-ping-official)
+You can edit it by pull request, my administrators may merge them if they accept your edit.
 
-### I could do what?
+I just do these and remove them after finished them. I won't edit them.
 
-- PHP
-- - laravel
-- - adminer (a framework for cli-php)
-- JAVA
-- - PHP formt JAVA (Sorry for it)
-- - Minecraft
-- C++
-- - learning
+### Task Queue
 
-### Sorry for these
+- empty now (I'm free!)
 
-- Poor English
-- Poor aesthetics
-- Can't describle self correctly
-- Can't realize what others say correctly
-
-### In progress
+### Draft
 
 - SodionAuth
 - - Add forge support
 - - Reformat core
 - Learning
-- - Learning c++
-
-### In plan
-
-- Learning
-- - Learning rust
+- - Learning c++ rust

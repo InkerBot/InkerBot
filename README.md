@@ -33,8 +33,6 @@
 - SodionAuth
 - - Add forge support
 - - Reformat core
-- Mohist
-- - Fix issues
 - Learning
 - - Learning c++
 

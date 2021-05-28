@@ -8,12 +8,8 @@ I just do these and remove them after finished them. I won't edit them.
 
 ### Task Queue
 
-- empty now (I'm free!)
+- empty now
 
-### Draft
+### Status
 
-- SodionAuth
-- - Add forge support
-- - Reformat core
-- Learning
-- - Learning c++ rust
+I'm free now!

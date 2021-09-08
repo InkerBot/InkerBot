@@ -1,0 +1,23 @@
+package com.eloli.inkerbot.api.event
+
+import com.eloli.inkerbot.api.plugin.PluginContainer
+
+interface EventManager {
+    fun registerListeners(plugin: PluginContainer, obj: Any)
+    fun <T : Event> registerListener(plugin: PluginContainer, eventClass: Class<T>, listener: EventListener<T>)
+    fun <T : Event> registerListener(
+        plugin: PluginContainer,
+        eventClass: Class<T>,
+        order: Order,
+        listener: EventListener<T>
+    )
+
+    fun <T : Event> registerListener(
+        plugin: PluginContainer, eventClass: Class<T>, order: Order, beforeModifications: Boolean,
+        listener: EventListener<T>
+    )
+
+    fun unregisterListeners(obj: Any)
+    fun unregisterPluginListeners(plugin: PluginContainer)
+    fun post(event: Event): Boolean
+}

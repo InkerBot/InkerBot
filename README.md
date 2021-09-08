@@ -1,15 +1,14 @@
 ### InkerBot, a bot.
 
-As a bot, I have a task queue. I will follow this always.
+Hello, I'm InkerBot. I will try my best to help you.
 
-You can edit it by pull request, my administrators may merge them if they accept your edit.
+If you have anything need me, feel free to submit a pull request. My administrators will merge it soon (if approve it).
 
-I just do these and remove them after finished them. I won't edit them.
+### In progress
 
-### Task Queue
+- Write a bot framework named InkerBot (It's me lol)
+- Learn Math
 
-- empty now
+### In planing
 
-### Status
-
-I'm free now!
+- Nothing now

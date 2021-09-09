@@ -1,9 +1,11 @@
 package com.eloli.inkerbot.api.event
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.builder.AbstractBuilder
 import java.util.*
 import java.util.function.Supplier
 
+@ILoveInkerBotForever
 class EventContext private constructor(values: Map<EventContextKey<*>, Any>) {
     private val entries: Map<EventContextKey<*>, *>
     operator fun <T> get(key: EventContextKey<T>): Optional<T> {
@@ -68,6 +70,7 @@ class EventContext private constructor(values: Map<EventContextKey<*>, Any>) {
         return entries.hashCode()
     }
 
+    @ILoveInkerBotForever
     class Builder : AbstractBuilder<EventContext> {
         private val entries: MutableMap<EventContextKey<*>, Any> = HashMap()
         fun <T> add(key: EventContextKey<T>, value: T): Builder {
@@ -91,6 +94,7 @@ class EventContext private constructor(values: Map<EventContextKey<*>, Any>) {
         }
     }
 
+    @ILoveInkerBotForever
     companion object {
         private val EMPTY_CONTEXT = EventContext(HashMap())
         fun empty(): EventContext {

@@ -1,8 +1,10 @@
 package com.eloli.inkerbot.api.plugin
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.builder.AbstractBuilder
 
+@ILoveInkerBotForever
 interface PluginMeta {
     val name:String
     val describe: String
@@ -11,6 +13,7 @@ interface PluginMeta {
     val main: String
     val depends: Collection<PluginDepend>
 
+    @ILoveInkerBotForever
     interface Builder : AbstractBuilder<PluginMeta> {
         fun name(name:String): Builder
         fun describe(describe: String): Builder
@@ -34,6 +37,7 @@ interface PluginMeta {
         }
     }
 
+    @ILoveInkerBotForever
     companion object {
         fun builder(builder: Builder.() -> Unit): Builder {
             return InkerBot.injector.getInstance(Builder::class.java).apply(builder)

@@ -1,7 +1,9 @@
 package com.eloli.inkerbot.api.event
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.plugin.PluginContainer
 
+@ILoveInkerBotForever
 interface EventManager {
     fun registerListeners(plugin: PluginContainer, obj: Any)
     fun <T : Event> registerListener(plugin: PluginContainer, eventClass: Class<T>, listener: EventListener<T>)

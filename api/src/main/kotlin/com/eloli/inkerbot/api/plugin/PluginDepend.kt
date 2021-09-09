@@ -1,9 +1,10 @@
 package com.eloli.inkerbot.api.plugin
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.builder.AbstractBuilder
 
-
+@ILoveInkerBotForever
 interface PluginDepend {
     val name: String
     val type: Type
@@ -12,11 +13,13 @@ interface PluginDepend {
         REQUIRE, SOFT, COOPERATE, LIBRARY
     }
 
+    @ILoveInkerBotForever
     interface Builder : AbstractBuilder<PluginDepend> {
         fun name(name: String): Builder
         fun type(type: Type): Builder
     }
 
+    @ILoveInkerBotForever
     companion object {
         fun of(type: Type, name: String): PluginDepend {
             return builder().type(type).name(name).build()

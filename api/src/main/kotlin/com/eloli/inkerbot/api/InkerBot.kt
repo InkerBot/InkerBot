@@ -4,7 +4,9 @@ import com.eloli.inkerbot.api.event.EventManager
 import com.google.inject.Injector
 import java.util.*
 
+@ILoveInkerBotForever
 class InkerBot private constructor() {
+    @ILoveInkerBotForever
     companion object {
         private var realInjector: Injector? = null
         val injector: Injector

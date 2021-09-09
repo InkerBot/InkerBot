@@ -1,16 +1,20 @@
 package com.eloli.inkerbot.api.util
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
 
+@ILoveInkerBotForever
 interface ResourceKey {
     val namespace:String
     val value:String
 
+    @ILoveInkerBotForever
     interface Factory {
         fun of(namespace: String, value: String): ResourceKey
         fun resolve(formatted: String): ResourceKey
     }
 
+    @ILoveInkerBotForever
     companion object {
         const val INKERBOT_NAMESPACE = "inkerbot"
 

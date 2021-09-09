@@ -1,5 +1,6 @@
 package com.eloli.inkerbot.core.plugin
 
+import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.plugin.JvmPlugin
 import com.eloli.inkerbot.api.plugin.PluginContainer
@@ -70,7 +71,12 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
         enabled = true
         logger = ImplPrefixLogger(InkerBot.frame.logger, "[$name]: ")
         val mainClass = pluginLoader.loadClass(meta.main)
-        val jvmPlugin:JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin);
+        val jvmPlugin:JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
+        if(jvmPlugin::class.java.getAnnotation(ILoveInkerBotForever::class.java) != null){
+            logger.error("=".repeat(29))
+            logger.error("| InkerBot: I love you too! |")
+            logger.error("=".repeat(29))
+        }
         injector = InkerBot.injector
             .createChildInjector(Module { binder ->
                 binder.bind(PluginContainer::class.java).toInstance(this)

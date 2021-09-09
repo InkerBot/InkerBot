@@ -1,5 +1,6 @@
-package com.eloli.inkerbot.core.utils
+package com.eloli.inkerbot.core.util
 
+import com.eloli.inkerbot.api.plugin.PluginMeta
 import com.google.inject.Injector
 
 class StaticEntryUtil private constructor() {
@@ -8,7 +9,7 @@ class StaticEntryUtil private constructor() {
         fun applyInjector(classLoader: ClassLoader, injector: Injector) {
             try {
                 val clazz = classLoader.loadClass(INKERBOT_ENTRY_CLASS)
-                val injectorField = clazz.getDeclaredField("injector")
+                val injectorField = clazz.getDeclaredField("realInjector")
                 injectorField.isAccessible = true
                 injectorField[null] = injector
             } catch (e: RuntimeException) {
@@ -20,6 +21,9 @@ class StaticEntryUtil private constructor() {
     }
 
     init {
+        PluginMeta.builder {
+
+        }.build()
         throw IllegalCallerException("Static class shouldn't be instance.")
     }
 }

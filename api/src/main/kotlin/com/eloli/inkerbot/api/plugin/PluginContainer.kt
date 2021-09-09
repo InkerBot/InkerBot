@@ -12,7 +12,7 @@ interface PluginContainer {
     val configPath: Path
     val enabled: Boolean
 
-    fun addDepend(depend: PluginContainer?)
+    fun addDepend(depend: PluginContainer)
 
     @Throws(Exception::class)
     fun load()

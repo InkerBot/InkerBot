@@ -2,11 +2,12 @@ package com.eloli.inkerbot.api.plugin
 
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.builder.AbstractBuilder
+import java.util.*
 
 interface PluginUrls {
-    val home: String?
-    val source: String?
-    val issue: String?
+    val home: Optional<String>
+    val source: Optional<String>
+    val issue: Optional<String>
     interface Builder : AbstractBuilder<PluginUrls> {
         fun home(home: String?): Builder
         fun source(source: String?): Builder
@@ -14,8 +15,12 @@ interface PluginUrls {
     }
 
     companion object {
+        fun builder(builder: Builder.() -> Unit): Builder {
+            return InkerBot.injector.getInstance(Builder::class.java).apply(builder)
+        }
+
         fun builder(): Builder {
-            return InkerBot.getInjector().getInstance(Builder::class.java)
+            return InkerBot.injector.getInstance(Builder::class.java)
         }
 
         fun of(home: String?, source: String?, issue: String?): PluginUrls {

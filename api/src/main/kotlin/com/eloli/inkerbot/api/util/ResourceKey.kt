@@ -1,6 +1,6 @@
 package com.eloli.inkerbot.api.util
 
-import com.eloli.inkerbot.core.inkerbot.api.InkerBot
+import com.eloli.inkerbot.api.InkerBot
 
 interface ResourceKey {
     val namespace:String
@@ -19,7 +19,7 @@ interface ResourceKey {
         }
 
         fun factory(): Factory {
-            return InkerBot.getInjector().getInstance(Factory::class.java)
+            return InkerBot.injector.getInstance(Factory::class.java)
         }
 
         fun of(namespace: String, value: String): ResourceKey {

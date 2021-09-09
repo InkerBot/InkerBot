@@ -1,18 +1,30 @@
-package com.eloli.inkerbot.api;
+package com.eloli.inkerbot.api
 
-import com.google.inject.Injector;
+import com.eloli.inkerbot.api.event.EventManager
+import com.google.inject.Injector
+import java.util.*
 
-import javax.annotation.Nonnull;
+class InkerBot private constructor() {
+    companion object {
+        private var realInjector: Injector? = null
+        val injector: Injector
+            get(){
+                Objects.requireNonNull(realInjector, "Couldn't found InkerBot instance in this classloader.")
+                return realInjector!!
+            }
 
-public final class InkerBot {
-    private InkerBot() {
-        throw new IllegalCallerException("Static class shouldn't be instance.");
+        val frame:Frame
+            get() {
+                return injector.getInstance(Frame::class.java)
+            }
+
+        val eventManager: EventManager
+            get() {
+                return injector.getInstance(EventManager::class.java)
+            }
     }
 
-    private static Injector injector;
-
-    @Nonnull
-    public static Injector getInjector(){
-        return injector;
+    init {
+        throw IllegalCallerException("Static class shouldn't be instance.")
     }
 }

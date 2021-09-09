@@ -1,6 +1,6 @@
 package com.eloli.inkerbot.api.plugin
 
-import com.eloli.inkerbot.core.inkerbot.api.InkerBot
+import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.builder.AbstractBuilder
 
 
@@ -12,18 +12,22 @@ interface PluginDepend {
         REQUIRE, SOFT, COOPERATE, LIBRARY
     }
 
-    interface Builder : AbstractBuilder<PluginDepend?> {
+    interface Builder : AbstractBuilder<PluginDepend> {
         fun name(name: String): Builder
         fun type(type: Type): Builder
     }
 
     companion object {
-        fun of(type: Type, name: String): PluginDepend? {
+        fun of(type: Type, name: String): PluginDepend {
             return builder().type(type).name(name).build()
         }
 
         fun builder(): Builder {
-            return InkerBot.getInjector().getInstance(Builder::class.java)
+            return InkerBot.injector.getInstance(Builder::class.java)
+        }
+
+        fun builder(builder: Builder.() -> Unit): Builder {
+            return InkerBot.injector.getInstance(Builder::class.java).apply(builder)
         }
     }
 }

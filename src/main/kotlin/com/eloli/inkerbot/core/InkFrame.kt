@@ -19,7 +19,7 @@ import javax.inject.Singleton
 @Singleton
 class InkFrame:Frame {
     override val logger: Logger
-        get() = LoggerFactory.getLogger(InkerBot::class.java)
+        get() = LoggerFactory.getLogger("inkerbot")
     override val classLoader: ClassLoader
         get() = InkerBot::class.java.classLoader
     @Inject
@@ -33,6 +33,8 @@ class InkFrame:Frame {
     private lateinit var pluginManager: PluginManager
     @Inject
     private lateinit var eventManager: EventManager
+    @Inject
+    private lateinit var serviceManager: InkServiceManager
 
     fun init(){
         if (setting.banner) {
@@ -53,7 +55,5 @@ class InkFrame:Frame {
 
         pluginManager.load()
         pluginManager.enable()
-
-        eventManager.post(InkLifeStyleEvent.Enable())
     }
 }

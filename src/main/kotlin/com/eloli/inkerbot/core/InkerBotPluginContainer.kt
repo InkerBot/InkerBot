@@ -3,6 +3,7 @@ package com.eloli.inkerbot.core
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.plugin.PluginContainer
 import com.eloli.inkerbot.api.plugin.PluginMeta
+import com.google.inject.Injector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -23,7 +24,7 @@ class InkerBotPluginContainer:PluginContainer {
         }
         main("com.eloli.inkerbot.core.InkerBotModule")
     }.build()
-    override val logger: Logger = LoggerFactory.getLogger(InkerBot::class.java)
+    override val logger: Logger = LoggerFactory.getLogger("plugin@inkerbot")
     override val dataPath: Path = File("./storage/inkerbot").toPath()
     override val configPath: Path = File("./config/inkerbot").toPath()
     override val enabled: Boolean = true
@@ -43,6 +44,7 @@ class InkerBotPluginContainer:PluginContainer {
     override fun disable() {
         //
     }
+
 
     override fun toString(): String {
         return "MemPlugin@inkerbot"

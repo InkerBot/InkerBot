@@ -1,8 +1,12 @@
 package com.eloli.inkerbot.mirai
 
+import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
+import com.eloli.inkerbot.api.event.EventListener
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.lifestyle.LifeStyleEvent
+import com.eloli.inkerbot.api.event.message.MessageEvent
+import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.api.plugin.JvmPlugin
 import com.eloli.inkerbot.api.plugin.PluginContainer
 import com.google.inject.Binder
@@ -26,10 +30,11 @@ class MiraiCore:JvmPlugin {
     private lateinit var eventManager: EventManager
     @Inject
     private lateinit var plugin: PluginContainer
-    private var logger: Logger = LoggerFactory.getLogger("mirai")
+    @Inject
+    private lateinit var logger: Logger
 
     @EventHandler
-    fun onEnable(event:LifeStyleEvent.Enable){
+    fun onEnable(e:LifeStyleEvent.Enable){
         runBlocking {
             var bot = BotFactory.newBot(config.qqNumber.toLong(), config.qqPassword){
                 fileBasedDeviceInfo(plugin.dataPath.resolve("device.json").toString())
@@ -37,8 +42,17 @@ class MiraiCore:JvmPlugin {
                 botLoggerSupplier = { logger.asMiraiLogger() }
                 networkLoggerSupplier  = { logger.asMiraiLogger() }
             }.alsoLogin()
+            MiraiHandler.register(bot)
             bot.eventChannel.subscribeAlways<Event> {
+                logger.debug("onEvent: {}", this)
                 eventManager.post(MiraiBoxEvent(this))
+            }
+        }
+
+        InkerBot.eventManager.registerListener(plugin, MessageEvent::class.java){
+            if(it.message is PlainTextComponent
+                && (it.message as PlainTextComponent).context.startsWith("/inkerbot:表白")){
+                it.reply.sendMessage(PlainTextComponent.of("谢谢！"))
             }
         }
     }

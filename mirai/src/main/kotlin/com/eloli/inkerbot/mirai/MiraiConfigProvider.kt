@@ -13,6 +13,7 @@ class MiraiConfigProvider @Inject constructor(
 ) : Provider<MiraiConfig> {
     private val configService: ConfigService<MiraiConfig>
     private val setting: MiraiConfig
+
     override fun get(): MiraiConfig {
         return setting
     }

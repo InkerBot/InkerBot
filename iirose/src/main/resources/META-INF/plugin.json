@@ -1,0 +1,14 @@
+{
+  "name": "iirose",
+  "describe": "InkerBot iirose api provider.",
+  "version": "1.0-SNAPSHOT",
+  "urls": {
+    "home": "home",
+    "source": "source",
+    "issue": "issue"
+  },
+  "main": "com.eloli.inkerbot.iirose.IiroseCore",
+  "depends": [
+
+  ]
+}

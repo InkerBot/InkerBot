@@ -3,6 +3,7 @@ package com.eloli.inkerbot.core.event
 import com.eloli.inkerbot.api.event.*
 import com.eloli.inkerbot.api.event.EventListener
 import com.eloli.inkerbot.api.plugin.PluginContainer
+import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.*
@@ -12,6 +13,7 @@ import javax.inject.Singleton
 
 @Singleton
 class InkEventManager : EventManager {
+    private val logger = LoggerFactory.getLogger("event")
     private val linkedHandlers: MutableMap<Class<Event>, MutableCollection<ImplListenerStruct<Event>>> =
         ConcurrentHashMap()
     private val events: MutableCollection<Class<Event>> = Collections.synchronizedSet(HashSet())
@@ -78,6 +80,37 @@ class InkEventManager : EventManager {
             }
     }
 
+    override fun <T : Event> registerListener(plugin: PluginContainer, eventClass: Class<T>, listener: (T) -> Unit) {
+        registerListener(plugin, eventClass, translate(listener))
+    }
+
+    override fun <T : Event> registerListener(
+        plugin: PluginContainer,
+        eventClass: Class<T>,
+        order: Order,
+        listener: (T) -> Unit
+    ) {
+        registerListener(plugin, eventClass, order, translate(listener))
+    }
+
+    override fun <T : Event> registerListener(
+        plugin: PluginContainer,
+        eventClass: Class<T>,
+        order: Order,
+        beforeModifications: Boolean,
+        listener: (T) -> Unit
+    ) {
+        registerListener(plugin, eventClass, order, beforeModifications, translate(listener))
+    }
+
+    private fun <T : Event> translate(listener: (T) -> Unit):EventListener<T>{
+        return object:EventListener<T>{
+            override fun handle(event: T) {
+                event.apply(listener)
+            }
+        }
+    }
+
     override fun unregisterListeners(obj: Any) {
         Arrays.stream(obj.javaClass.methods)
             .filter { method: Method -> method.returnType == Void.TYPE }
@@ -139,6 +172,7 @@ class InkEventManager : EventManager {
     }
 
     override fun post(event: Event): Boolean {
+        logger.debug("{}", event)
         poster(event).post()
         return if (event is Cancellable) {
             event.cancelled

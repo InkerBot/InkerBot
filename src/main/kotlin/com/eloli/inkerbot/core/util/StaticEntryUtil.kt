@@ -1,7 +1,11 @@
 package com.eloli.inkerbot.core.util
 
+import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.plugin.PluginMeta
 import com.google.inject.Injector
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class StaticEntryUtil private constructor() {
     companion object {
@@ -16,6 +20,34 @@ class StaticEntryUtil private constructor() {
                 throw e
             } catch (e: Exception) {
                 throw RuntimeException(e)
+            }
+        }
+
+        fun isStaticEntry(name: String): Boolean {
+            return name.startsWith(INKERBOT_ENTRY_CLASS)
+        }
+
+        fun getEntryBuffer(name: String): ByteArray {
+            val internalName = name.replace('.', '/') + ".class"
+            val inputStream: InputStream = InkerBot.frame.classLoader.getResourceAsStream(internalName)
+                ?: throw ClassNotFoundException(name)
+
+            try {
+                try {
+                    ByteArrayOutputStream().use { outputStream ->
+                        val buffer = ByteArray(4096)
+                        var bytesRead = -1
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                        }
+                        inputStream.close()
+                        return outputStream.toByteArray()
+                    }
+                } finally {
+                    inputStream.close()
+                }
+            } catch (ex: IOException) {
+                throw ClassNotFoundException("Cannot load resource for class [$name]", ex)
             }
         }
     }

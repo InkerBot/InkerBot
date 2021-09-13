@@ -15,4 +15,6 @@ class InkSetting {
         "https://repo1.maven.org/maven2/",
         "https://www.jitpack.io/"
     )
+
+    var database = "h2"
 }

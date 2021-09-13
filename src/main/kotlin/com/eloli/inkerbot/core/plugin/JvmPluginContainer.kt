@@ -6,26 +6,25 @@ import com.eloli.inkerbot.api.plugin.JvmPlugin
 import com.eloli.inkerbot.api.plugin.PluginContainer
 import com.eloli.inkerbot.api.plugin.PluginDepend
 import com.eloli.inkerbot.api.plugin.PluginMeta
-import com.eloli.inkerbot.core.util.ImplPrefixLogger
+import com.eloli.inkerbot.core.dependency.DependencyResolver
 import com.eloli.inkerbot.core.util.ReadPluginJson
 import com.eloli.inkerbot.core.util.StaticEntryUtil
 import com.google.gson.Gson
 import com.google.inject.Injector
 import com.google.inject.Module
 import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
-import java.net.URL
-import java.net.URLClassLoader
 import java.nio.file.Path
 
 class JvmPluginContainer(val jarFile: File) : PluginContainer{
     private val gson: Gson = Gson()
-    private lateinit var injector: Injector
-    private lateinit var pluginLoader: ClassLoader
+    lateinit var injector: Injector
+    lateinit var pluginLoader: JvmPluginClassloader
     override lateinit var meta: PluginMeta
     override lateinit var logger: Logger
 
@@ -37,23 +36,25 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
         }
     override val configPath: Path
         get() {
-            return InkerBot.frame.storagePath.resolve(name)
+            return InkerBot.frame.configPath.resolve(name)
         }
 
     override var enabled: Boolean = false
 
     override fun addDepend(depend: PluginContainer) {
-
+        require(depend is JvmPluginContainer) { "Only java plugin could depend on." }
+        pluginLoader.addDepend(depend.pluginLoader)
     }
 
     override fun load() {
-        this.pluginLoader = URLClassLoader(Array<URL>(1){ jarFile.toURI().toURL() }, InkerBot.frame.classLoader)
+        this.pluginLoader = JvmPluginClassloader(jarFile.toURI().toURL(), InkerBot.frame.classLoader)
         loadMeta()
+        val dependencyResolver = InkerBot.injector.getInstance(DependencyResolver::class.java)
         for (depend in meta.depends) {
             if (depend.type == PluginDepend.Type.LIBRARY) {
-                // this.pluginLoader.addURL(
-                //     dependencyResolver.getDependencyFile(depend.name()).toURI().toURL()
-                // )
+                this.pluginLoader.addURL(
+                    dependencyResolver.getDependencyFile(depend.name).toURI().toURL()
+                )
             }
         }
     }
@@ -69,7 +70,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
 
     override fun enable() {
         enabled = true
-        logger = ImplPrefixLogger(InkerBot.frame.logger, "[$name]: ")
+        logger = LoggerFactory.getLogger("plugin@$name")
         val mainClass = pluginLoader.loadClass(meta.main)
         val jvmPlugin:JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
         if(jvmPlugin::class.java.getAnnotation(ILoveInkerBotForever::class.java) != null){

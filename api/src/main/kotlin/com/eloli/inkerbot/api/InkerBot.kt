@@ -20,6 +20,11 @@ class InkerBot private constructor() {
                 return injector.getInstance(Frame::class.java)
             }
 
+        val serviceManager: ServiceManager
+            get() {
+                return injector.getInstance(ServiceManager::class.java)
+            }
+
         val eventManager: EventManager
             get() {
                 return injector.getInstance(EventManager::class.java)

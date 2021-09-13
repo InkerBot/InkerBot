@@ -15,7 +15,7 @@ class InkPluginManager: PluginManager {
     }
     override val plugins: MutableCollection<PluginContainer> = ArrayList()
 
-    private val logger = LoggerFactory.getLogger(PluginManager::class.java)
+    private val logger = LoggerFactory.getLogger("plugin-manager")
 
     override fun addPlugin(pluginFile: File) {
         if (pluginFile.name.endsWith(".jar")) {
@@ -42,7 +42,7 @@ class InkPluginManager: PluginManager {
         while (itr.hasNext()) {
             val plugin = itr.next()
             try {
-                plugin!!.load()
+                plugin.load()
             } catch (e: FileNotFoundException) {
                 if (!ignoreNotApsaras) {
                     logger.warn(FAILED_TO_LOAD, plugin, e)

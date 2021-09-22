@@ -6,7 +6,7 @@ import com.eloli.inkerbot.api.builder.AbstractBuilder
 
 @ILoveInkerBotForever
 interface PluginMeta {
-    val name:String
+    val name: String
     val describe: String
     val version: String
     val urls: PluginUrls
@@ -15,7 +15,7 @@ interface PluginMeta {
 
     @ILoveInkerBotForever
     interface Builder : AbstractBuilder<PluginMeta> {
-        fun name(name:String): Builder
+        fun name(name: String): Builder
         fun describe(describe: String): Builder
         fun version(version: String): Builder
         fun urls(urls: PluginUrls): Builder
@@ -25,6 +25,7 @@ interface PluginMeta {
         fun urls(urlsBuilder: PluginUrls.Builder): Builder {
             return this.urls(urlsBuilder.build())
         }
+
         fun urls(builder: PluginUrls.Builder.() -> Unit): Builder {
             return this.urls(PluginUrls.builder(builder))
         }
@@ -32,6 +33,7 @@ interface PluginMeta {
         fun depend(builder: PluginDepend.Builder): Builder {
             return this.depend(builder.build())
         }
+
         fun depend(builder: PluginDepend.Builder.() -> Unit): Builder {
             return this.depend(PluginDepend.builder(builder))
         }
@@ -42,6 +44,7 @@ interface PluginMeta {
         fun builder(builder: Builder.() -> Unit): Builder {
             return InkerBot.injector.getInstance(Builder::class.java).apply(builder)
         }
+
         fun builder(): Builder {
             return InkerBot.injector.getInstance(Builder::class.java)
         }

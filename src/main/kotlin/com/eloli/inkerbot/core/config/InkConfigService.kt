@@ -16,6 +16,7 @@ import javax.inject.Singleton
 
 class InkConfigService<T>(private val path: Path, private val configClass: Class<T>) : ConfigService<T> {
     private val yaml: Yaml
+
     @Throws(Exception::class)
     override fun load(): T {
         if (!path.toFile().exists()) {

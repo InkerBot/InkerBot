@@ -11,7 +11,6 @@ import com.eloli.inkerbot.api.model.message.AtComponent
 import com.eloli.inkerbot.api.model.message.MuiltComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.api.plugin.*
-import com.eloli.inkerbot.api.registry.Registrar
 import com.eloli.inkerbot.api.registry.Registry
 import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.api.util.Identity
@@ -29,12 +28,11 @@ import com.eloli.inkerbot.core.plugin.InkPluginUrls
 import com.eloli.inkerbot.core.registry.InkRegistry
 import com.eloli.inkerbot.core.service.H2DatabaseService
 import com.eloli.inkerbot.core.service.InkDatabaseService
-import com.eloli.inkerbot.core.setting.InkSetting
 import com.eloli.inkerbot.core.setting.ImplSettingProvider
+import com.eloli.inkerbot.core.setting.InkSetting
 import com.eloli.inkerbot.core.util.InkIdentity
 import com.eloli.inkerbot.core.util.InkResourceKey
 import com.google.inject.Binder
-import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
 import org.ktorm.database.Database
 
@@ -68,7 +66,7 @@ class InkerBotModule : JvmPlugin {
     }
 
     @EventHandler
-    fun onRegisterService(e:LifeStyleEvent.RegisterService) {
+    fun onRegisterService(e: LifeStyleEvent.RegisterService) {
         e.binder.bind(DatabaseService::class.java).annotatedWith(Names.named("h2")).to(H2DatabaseService::class.java)
         // e.binder.bind(object :TypeLiteral<Registrar<String>>() {}).annotatedWith(Names.named("a:b")).to(InkRegistryKey::class.java)
     }

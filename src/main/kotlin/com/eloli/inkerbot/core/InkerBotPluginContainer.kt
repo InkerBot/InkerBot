@@ -1,9 +1,7 @@
 package com.eloli.inkerbot.core
 
-import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.plugin.PluginContainer
 import com.eloli.inkerbot.api.plugin.PluginMeta
-import com.google.inject.Injector
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -11,9 +9,9 @@ import java.nio.file.Path
 import javax.inject.Singleton
 
 @Singleton
-class InkerBotPluginContainer:PluginContainer {
+class InkerBotPluginContainer : PluginContainer {
     override val name: String = "inkerbot"
-    override val meta: PluginMeta = PluginMeta.builder{
+    override val meta: PluginMeta = PluginMeta.builder {
         name("inkerbot")
         describe("inkerbot core plugin")
         version("1.0-SNAPSHOT")

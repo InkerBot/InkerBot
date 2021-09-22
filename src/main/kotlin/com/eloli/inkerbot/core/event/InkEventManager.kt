@@ -103,8 +103,8 @@ class InkEventManager : EventManager {
         registerListener(plugin, eventClass, order, beforeModifications, translate(listener))
     }
 
-    private fun <T : Event> translate(listener: (T) -> Unit):EventListener<T>{
-        return object:EventListener<T>{
+    private fun <T : Event> translate(listener: (T) -> Unit): EventListener<T> {
+        return object : EventListener<T> {
             override fun handle(event: T) {
                 event.apply(listener)
             }
@@ -129,8 +129,8 @@ class InkEventManager : EventManager {
                     .filter { v: ImplListenerStruct<Event> -> (v.listener as ImplEventListener<*>).method == method }
                     .forEach { v: ImplListenerStruct<Event> ->
                         listeners.remove(v)
-                        v.listenerEvents.forEach {
-                                iv: Class<*> -> linkedHandlers[iv]!!.remove(v)
+                        v.listenerEvents.forEach { iv: Class<*> ->
+                            linkedHandlers[iv]!!.remove(v)
                         }
                     }
             }
@@ -141,8 +141,8 @@ class InkEventManager : EventManager {
             .filter { v: ImplListenerStruct<Event> -> v.plugin == plugin }
             .forEach { v: ImplListenerStruct<Event> ->
                 listeners.remove(v)
-                v.listenerEvents.forEach {
-                        iv: Class<*> -> linkedHandlers[iv]!!.remove(v)
+                v.listenerEvents.forEach { iv: Class<*> ->
+                    linkedHandlers[iv]!!.remove(v)
                 }
             }
     }
@@ -166,7 +166,7 @@ class InkEventManager : EventManager {
         for (eventInterface in eventClass.interfaces) {
             registerEvent(eventInterface as Class<Event>)
         }
-        if(eventClass.superclass != null) {
+        if (eventClass.superclass != null) {
             registerEvent(eventClass.superclass as Class<Event>)
         }
     }
@@ -181,7 +181,7 @@ class InkEventManager : EventManager {
         }
     }
 
-    fun <T :Event> poster(event: T): EventPoster<T> {
+    fun <T : Event> poster(event: T): EventPoster<T> {
         if (!events.contains(event::class.java as Class<Event>)) {
             registerEvent(event.javaClass)
         }

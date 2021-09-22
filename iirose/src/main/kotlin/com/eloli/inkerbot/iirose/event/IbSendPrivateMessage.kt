@@ -9,30 +9,36 @@ class IbSendPrivateMessage(
     val target: String,
     val message: String,
     val color: String = "ffffff"
-):Event {
+) : Event {
     override val context: EventContext = EventContext.empty()
+
     @Singleton
-    class Resolver{
+    class Resolver {
         private val gson = Gson()
         private var messageId = 111111111111L
+
         @Inject
         private lateinit var eventManager: EventManager
+
         @EventHandler(order = Order.POST)
-        fun onSendRoomEvent(event: IbSendPrivateMessage){
-            eventManager.post(IbSendRawMessageEvent(
-                gson.toJson(Packet().apply {
-                    g = event.target
-                    m = event.message
-                    mc = event.color
-                    i = messageId++
-                })
-            ))
+        fun onSendRoomEvent(event: IbSendPrivateMessage) {
+            eventManager.post(
+                IbSendRawMessageEvent(
+                    gson.toJson(Packet().apply {
+                        g = event.target
+                        m = event.message
+                        mc = event.color
+                        i = messageId++
+                    })
+                )
+            )
         }
     }
-    class Packet{
-        lateinit var g:String
-        lateinit var m:String
-        lateinit var mc:String
-        var i:Long = 0L
+
+    class Packet {
+        lateinit var g: String
+        lateinit var m: String
+        lateinit var mc: String
+        var i: Long = 0L
     }
 }

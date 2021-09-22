@@ -10,12 +10,12 @@ class InkerBot private constructor() {
     companion object {
         private var realInjector: Injector? = null
         val injector: Injector
-            get(){
+            get() {
                 Objects.requireNonNull(realInjector, "Couldn't found InkerBot instance in this classloader.")
                 return realInjector!!
             }
 
-        val frame:Frame
+        val frame: Frame
             get() {
                 return injector.getInstance(Frame::class.java)
             }

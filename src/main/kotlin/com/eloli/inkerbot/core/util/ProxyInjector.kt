@@ -4,28 +4,27 @@ import com.google.inject.*
 import com.google.inject.spi.Element
 import com.google.inject.spi.InjectionPoint
 import com.google.inject.spi.TypeConverterBinding
-import java.lang.IllegalStateException
 import java.util.concurrent.CompletableFuture
 
-open class ProxyInjector:Injector {
+open class ProxyInjector : Injector {
     private val completableFutureInjector: CompletableFuture<Injector> = CompletableFuture()
     private val injector: Injector
         get() {
             val injector = completableFutureInjector.getNow(null)
             if (injector == null) {
                 throw IllegalStateException("Injector isn't available now.")
-            }else{
+            } else {
                 return injector
             }
         }
 
-    fun registerProxyInjector(injector: Injector){
+    fun registerProxyInjector(injector: Injector) {
         if (completableFutureInjector.getNow(null) != null) {
             throw IllegalStateException("Injector have been set.")
         }
         completableFutureInjector.complete(injector)
     }
-    
+
     override fun injectMembers(instance: Any) {
         injector.injectMembers(instance)
     }

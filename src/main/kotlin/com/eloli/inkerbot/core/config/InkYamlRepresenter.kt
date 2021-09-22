@@ -10,7 +10,6 @@ import org.yaml.snakeyaml.introspector.Property
 import org.yaml.snakeyaml.nodes.*
 import org.yaml.snakeyaml.representer.Representer
 import java.util.*
-import kotlin.collections.ArrayList
 
 class InkYamlRepresenter : Representer() {
     override fun representJavaBean(propertySet: Set<Property>, javaBean: Any): MappingNode {

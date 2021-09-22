@@ -11,9 +11,9 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class MiraiMemberRegistrar:Registrar<Member> {
+class MiraiMemberRegistrar : Registrar<Member> {
     @Inject
-    private lateinit var database:Database
+    private lateinit var database: Database
     override fun get(identity: Identity): Optional<Member> {
         val qqNumber = Optional.ofNullable(database.from(MiraiMember)
             .select(MiraiMember.qqNumber)
@@ -21,9 +21,9 @@ class MiraiMemberRegistrar:Registrar<Member> {
             .limit(1)
             .map { it[MiraiMember.qqNumber] }
             .firstOrNull())
-        if(qqNumber.isEmpty){
+        if (qqNumber.isEmpty) {
             return Optional.empty()
-        }else{
+        } else {
             TODO()
         }
     }

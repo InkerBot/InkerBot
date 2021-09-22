@@ -2,7 +2,6 @@ package com.eloli.inkerbot.mirai
 
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
-import com.eloli.inkerbot.api.event.EventListener
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.lifestyle.LifeStyleEvent
 import com.eloli.inkerbot.api.event.message.MessageEvent
@@ -17,30 +16,32 @@ import net.mamoe.mirai.alsoLogin
 import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.utils.LoggerAdapters.asMiraiLogger
 import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 
-class MiraiCore:JvmPlugin {
+class MiraiCore : JvmPlugin {
     override fun configure(binder: Binder) {
         binder.bind(MiraiConfig::class.java).toProvider(MiraiConfigProvider::class.java)
     }
 
     @Inject
     private lateinit var config: MiraiConfig
+
     @Inject
     private lateinit var eventManager: EventManager
+
     @Inject
     private lateinit var plugin: PluginContainer
+
     @Inject
     private lateinit var logger: Logger
 
     @EventHandler
-    fun onEnable(e:LifeStyleEvent.Enable){
+    fun onEnable(e: LifeStyleEvent.Enable) {
         runBlocking {
-            var bot = BotFactory.newBot(config.qqNumber.toLong(), config.qqPassword){
+            var bot = BotFactory.newBot(config.qqNumber.toLong(), config.qqPassword) {
                 fileBasedDeviceInfo(plugin.dataPath.resolve("device.json").toString())
                 cacheDir = plugin.dataPath.toFile()
                 botLoggerSupplier = { logger.asMiraiLogger() }
-                networkLoggerSupplier  = { logger.asMiraiLogger() }
+                networkLoggerSupplier = { logger.asMiraiLogger() }
             }.alsoLogin()
             MiraiHandler.register(bot)
             bot.eventChannel.subscribeAlways<Event> {
@@ -49,9 +50,10 @@ class MiraiCore:JvmPlugin {
             }
         }
 
-        InkerBot.eventManager.registerListener(plugin, MessageEvent::class.java){
-            if(it.message is PlainTextComponent
-                && (it.message as PlainTextComponent).context.startsWith("/inkerbot:表白")){
+        InkerBot.eventManager.registerListener(plugin, MessageEvent::class.java) {
+            if (it.message is PlainTextComponent
+                && (it.message as PlainTextComponent).context.startsWith("/inkerbot:表白")
+            ) {
                 it.reply.sendMessage(PlainTextComponent.of("谢谢！"))
             }
         }

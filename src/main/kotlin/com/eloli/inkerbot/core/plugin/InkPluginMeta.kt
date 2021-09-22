@@ -4,7 +4,6 @@ import com.eloli.inkerbot.api.plugin.PluginDepend
 import com.eloli.inkerbot.api.plugin.PluginMeta
 import com.eloli.inkerbot.api.plugin.PluginUrls
 import java.util.*
-import kotlin.collections.ArrayList
 
 class InkPluginMeta private constructor(
     override val name: String,
@@ -13,14 +12,14 @@ class InkPluginMeta private constructor(
     override val urls: PluginUrls,
     override val main: String,
     override val depends: Collection<PluginDepend>
-) :PluginMeta {
-    class Builder:PluginMeta.Builder {
-        var name: String?=null
-        var describe: String?=null
-        var version: String?=null
-        var urls: PluginUrls?=null
-        var main: String?=null
-        var depends: MutableCollection<PluginDepend> =ArrayList()
+) : PluginMeta {
+    class Builder : PluginMeta.Builder {
+        var name: String? = null
+        var describe: String? = null
+        var version: String? = null
+        var urls: PluginUrls? = null
+        var main: String? = null
+        var depends: MutableCollection<PluginDepend> = ArrayList()
         override fun name(name: String): PluginMeta.Builder {
             this.name = name
             return this
@@ -63,7 +62,8 @@ class InkPluginMeta private constructor(
                 version!!,
                 urls!!,
                 main!!,
-                depends)
+                depends
+            )
         }
 
     }

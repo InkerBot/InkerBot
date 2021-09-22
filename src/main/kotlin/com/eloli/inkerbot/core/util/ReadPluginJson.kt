@@ -9,14 +9,14 @@ import java.io.Reader
 import java.util.*
 
 class ReadPluginJson {
-    companion object{
-        private val gson:Gson = Gson();
-        fun read(reader: Reader):PluginMeta {
+    companion object {
+        private val gson: Gson = Gson();
+        fun read(reader: Reader): PluginMeta {
             return gson.fromJson(reader, JsonPluginMeta::class.java)
         }
     }
 
-    class JsonPluginMeta:PluginMeta {
+    class JsonPluginMeta : PluginMeta {
         override lateinit var name: String
         override lateinit var describe: String
         override lateinit var version: String
@@ -25,7 +25,7 @@ class ReadPluginJson {
         override lateinit var depends: Collection<JsonPluginDepend>
     }
 
-    class JsonPluginUrls:PluginUrls {
+    class JsonPluginUrls : PluginUrls {
         override val home: Optional<String>
             get() {
                 return Optional.ofNullable(real_home)
@@ -41,13 +41,15 @@ class ReadPluginJson {
 
         @SerializedName("home")
         var real_home: String? = null
+
         @SerializedName("source")
         var real_source: String? = null
+
         @SerializedName("issue")
         var real_issue: String? = null
     }
 
-    class JsonPluginDepend:PluginDepend {
+    class JsonPluginDepend : PluginDepend {
         override lateinit var name: String
         override lateinit var type: PluginDepend.Type
     }

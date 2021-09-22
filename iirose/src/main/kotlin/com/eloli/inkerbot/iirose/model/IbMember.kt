@@ -9,10 +9,10 @@ import com.eloli.inkerbot.api.util.ResourceKey
 import com.eloli.inkerbot.iirose.event.IbSendPrivateMessage
 import com.eloli.inkerbot.iirose.util.message.IbTranslator
 
-class IbMember(val userId:String, override val name: String) :Sender,Receiver {
+class IbMember(val userId: String, override val name: String) : Sender, Receiver {
     override val identity: Identity = Identity.Companion.of(userId)
-    override val key: ResourceKey= ResourceKey.of("iirose","member")
+    override val key: ResourceKey = ResourceKey.of("iirose", "member")
     override fun sendMessage(message: MessageComponent) {
-        InkerBot.eventManager.post(IbSendPrivateMessage(userId, IbTranslator.toIb(message),"ffffff"))
+        InkerBot.eventManager.post(IbSendPrivateMessage(userId, IbTranslator.toIb(message), "ffffff"))
     }
 }

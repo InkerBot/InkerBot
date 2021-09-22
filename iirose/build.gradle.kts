@@ -15,7 +15,7 @@ dependencies {
     compileOnly(project(":api"))
 }
 
-kotlin{
+kotlin {
     experimental {
         coroutines = org.jetbrains.kotlin.gradle.dsl.Coroutines.ENABLE
     }

@@ -18,7 +18,7 @@ dependencies {
     api("com.squareup.okhttp3:okhttp:4.9.1")
 }
 
-kotlin{
+kotlin {
     experimental {
         coroutines = org.jetbrains.kotlin.gradle.dsl.Coroutines.ENABLE
     }

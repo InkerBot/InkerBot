@@ -7,8 +7,8 @@ class InkPluginUrls(
     override var home: Optional<String>,
     override var source: Optional<String>,
     override var issue: Optional<String>
-) :PluginUrls {
-    class Builder:PluginUrls.Builder{
+) : PluginUrls {
+    class Builder : PluginUrls.Builder {
         var home: Optional<String> = Optional.empty()
         var source: Optional<String> = Optional.empty()
         var issue: Optional<String> = Optional.empty()

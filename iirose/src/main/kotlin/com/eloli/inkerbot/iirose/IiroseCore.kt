@@ -14,10 +14,11 @@ import com.eloli.inkerbot.iirose.event.IbSendRoomMessage
 import com.google.inject.Binder
 import javax.inject.Inject
 
-class IiroseCore:JvmPlugin {
+class IiroseCore : JvmPlugin {
     override fun configure(binder: Binder) {
         binder.bind(IbConfig::class.java).toProvider(IbConfigProvider::class.java)
     }
+
     @Inject
     private lateinit var pluginContainer: PluginContainer
 
@@ -28,18 +29,24 @@ class IiroseCore:JvmPlugin {
     private lateinit var eventManager: EventManager
 
     @EventHandler
-    fun onBoot(event: LifeStyleEvent.Enable){
+    fun onBoot(event: LifeStyleEvent.Enable) {
         connection.onBoot()
-        eventManager.registerListeners(pluginContainer,
-            InkerBot.injector.getInstance(IbGroupMessageEvent.Resolver::class.java))
-        eventManager.registerListeners(pluginContainer,
-            InkerBot.injector.getInstance(IbSendRoomMessage.Resolver::class.java))
-        eventManager.registerListeners(pluginContainer,
-            InkerBot.injector.getInstance(IbSendPrivateMessage.Resolver::class.java))
+        eventManager.registerListeners(
+            pluginContainer,
+            InkerBot.injector.getInstance(IbGroupMessageEvent.Resolver::class.java)
+        )
+        eventManager.registerListeners(
+            pluginContainer,
+            InkerBot.injector.getInstance(IbSendRoomMessage.Resolver::class.java)
+        )
+        eventManager.registerListeners(
+            pluginContainer,
+            InkerBot.injector.getInstance(IbSendPrivateMessage.Resolver::class.java)
+        )
     }
 
     @EventHandler
-    fun onEvent(event: IbGroupMessageEvent){
+    fun onEvent(event: IbGroupMessageEvent) {
         event.sender.sendMessage(event.message)
     }
 }

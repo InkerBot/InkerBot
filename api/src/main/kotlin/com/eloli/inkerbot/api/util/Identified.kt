@@ -4,5 +4,5 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface Identified {
-    val identity:Identity
+    val identity: Identity
 }

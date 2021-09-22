@@ -33,6 +33,7 @@ class DependencyResolver @Inject constructor(frame: Frame, setting: InkSetting) 
     private val repositorySystem: RepositorySystem
     private val repositorySystemSession: DefaultRepositorySystemSession
     private val remoteRepositories: MutableList<RemoteRepository> = LinkedList()
+
     @Throws(ArtifactResolutionException::class)
     fun getDependencyFile(packageName: String): File {
         val splits = packageName.split(":").toTypedArray()

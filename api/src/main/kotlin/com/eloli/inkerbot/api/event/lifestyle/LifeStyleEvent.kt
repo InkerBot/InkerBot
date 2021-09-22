@@ -5,11 +5,12 @@ import com.eloli.inkerbot.api.event.Event
 import com.google.inject.Binder
 
 @ILoveInkerBotForever
-interface LifeStyleEvent:Event {
+interface LifeStyleEvent : Event {
     @ILoveInkerBotForever
-    interface Enable: LifeStyleEvent
+    interface Enable : LifeStyleEvent
+
     @ILoveInkerBotForever
-    interface RegisterService: LifeStyleEvent{
+    interface RegisterService : LifeStyleEvent {
         val binder: Binder
     }
 }

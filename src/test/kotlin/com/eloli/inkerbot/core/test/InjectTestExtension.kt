@@ -1,12 +1,11 @@
 package com.eloli.inkerbot.core.test
 
 import com.eloli.inkerbot.api.InkerBot
-import org.junit.jupiter.api.extension.TestInstanceFactory
 import org.apache.log4j.BasicConfigurator
-import kotlin.Throws
-import org.junit.jupiter.api.extension.TestInstantiationException
-import org.junit.jupiter.api.extension.TestInstanceFactoryContext
 import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.TestInstanceFactory
+import org.junit.jupiter.api.extension.TestInstanceFactoryContext
+import org.junit.jupiter.api.extension.TestInstantiationException
 
 class InjectTestExtension : TestInstanceFactory {
     companion object {

@@ -5,8 +5,8 @@ import com.eloli.inkerbot.api.InkerBot
 
 @ILoveInkerBotForever
 interface ResourceKey {
-    val namespace:String
-    val value:String
+    val namespace: String
+    val value: String
 
     @ILoveInkerBotForever
     interface Factory {

@@ -21,7 +21,7 @@ import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
 import java.nio.file.Path
 
-class JvmPluginContainer(val jarFile: File) : PluginContainer{
+class JvmPluginContainer(val jarFile: File) : PluginContainer {
     private val gson: Gson = Gson()
     lateinit var injector: Injector
     lateinit var pluginLoader: JvmPluginClassloader
@@ -72,8 +72,8 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
         enabled = true
         logger = LoggerFactory.getLogger("plugin@$name")
         val mainClass = pluginLoader.loadClass(meta.main)
-        val jvmPlugin:JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
-        if(jvmPlugin::class.java.getAnnotation(ILoveInkerBotForever::class.java) != null){
+        val jvmPlugin: JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
+        if (jvmPlugin::class.java.getAnnotation(ILoveInkerBotForever::class.java) != null) {
             logger.error("=".repeat(29))
             logger.error("| InkerBot: I love you too! |")
             logger.error("=".repeat(29))

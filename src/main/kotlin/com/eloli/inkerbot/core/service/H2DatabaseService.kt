@@ -10,20 +10,20 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class H2DatabaseService:DatabaseService {
+class H2DatabaseService : DatabaseService {
     @Inject
     private lateinit var frame: Frame
     private var database: Database? = null
-    private val logger:Logger = LoggerFactory.getLogger("database@h2")
+    private val logger: Logger = LoggerFactory.getLogger("database@h2")
     override fun get(): Database {
-        if(database == null){
+        if (database == null) {
             database = Database.connect(
-                "jdbc:h2:"+frame.self.dataPath.resolve("storage"),
+                "jdbc:h2:" + frame.self.dataPath.resolve("storage"),
                 driver = "org.h2.Driver",
                 logger = Slf4jLoggerAdapter(logger)
             )
             return database as Database
-        }else{
+        } else {
             return database as Database
         }
     }

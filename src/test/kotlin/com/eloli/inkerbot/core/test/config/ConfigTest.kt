@@ -9,8 +9,9 @@ import javax.inject.Inject
 class ConfigTest {
     @Inject
     private lateinit var setting: InkSetting
+
     @Test
-    fun readSetting(){
+    fun readSetting() {
         assert(setting.banner)
     }
 }

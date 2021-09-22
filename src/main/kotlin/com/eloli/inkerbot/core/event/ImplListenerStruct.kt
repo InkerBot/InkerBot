@@ -4,7 +4,6 @@ import com.eloli.inkerbot.api.event.Event
 import com.eloli.inkerbot.api.event.EventListener
 import com.eloli.inkerbot.api.event.Order
 import com.eloli.inkerbot.api.plugin.PluginContainer
-import com.eloli.inkerbot.core.event.ImplListenerStruct
 import java.util.*
 
 class ImplListenerStruct<T : Event>(

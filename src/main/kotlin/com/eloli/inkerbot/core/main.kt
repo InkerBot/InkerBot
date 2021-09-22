@@ -2,14 +2,9 @@ package com.eloli.inkerbot.core
 
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.api.registry.Registrar
-import com.eloli.inkerbot.api.registry.Registry
-import com.eloli.inkerbot.api.service.DatabaseService
-import com.eloli.inkerbot.api.util.ResourceKey
 import com.eloli.inkerbot.core.event.lifestyle.InkLifeStyleEvent
 import com.eloli.inkerbot.core.util.StaticEntryUtil
 import com.google.inject.Guice
-import com.google.inject.TypeLiteral
 import org.apache.log4j.BasicConfigurator
 import org.ktorm.database.Database
 

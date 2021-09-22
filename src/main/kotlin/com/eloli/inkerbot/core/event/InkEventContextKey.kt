@@ -18,25 +18,25 @@ class InkEventContextKey<T>(override val key: ResourceKey, private val type: Cla
         return type.cast(value)
     }
 
-    class Builder<T>:EventContextKey.Builder<T>{
+    class Builder<T> : EventContextKey.Builder<T> {
         private var key: ResourceKey? = null;
         private var type: Class<T>? = null;
 
         override fun build(): EventContextKey<T> {
-            Objects.requireNonNull(key,"key")
-            Objects.requireNonNull(type,"type")
+            Objects.requireNonNull(key, "key")
+            Objects.requireNonNull(type, "type")
             return InkEventContextKey(key!!, type!!)
         }
 
         override fun key(key: ResourceKey): EventContextKey.Builder<T> {
-            Objects.requireNonNull(key,"key")
+            Objects.requireNonNull(key, "key")
             this.key = key
             return this
         }
 
         override fun <N> type(type: Class<N>): EventContextKey.Builder<N> {
-            Objects.requireNonNull(type,"type")
-            val builder:Builder<N> = Builder()
+            Objects.requireNonNull(type, "type")
+            val builder: Builder<N> = Builder()
             builder.key = key
             builder.type = type
             return builder

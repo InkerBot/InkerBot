@@ -4,8 +4,6 @@ import com.eloli.inkerbot.api.Frame
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.plugin.PluginManager
-import com.eloli.inkerbot.api.event.lifestyle.LifeStyleEvent
-import com.eloli.inkerbot.core.event.lifestyle.InkLifeStyleEvent
 import com.eloli.inkerbot.core.setting.InkSetting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -17,11 +15,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InkFrame:Frame {
+class InkFrame : Frame {
     override val logger: Logger
         get() = LoggerFactory.getLogger("inkerbot")
     override val classLoader: ClassLoader
         get() = InkerBot::class.java.classLoader
+
     @Inject
     override lateinit var self: InkerBotPluginContainer
     override val storagePath: Path = File("./storage").toPath()
@@ -29,14 +28,17 @@ class InkFrame:Frame {
 
     @Inject
     private lateinit var setting: InkSetting
+
     @Inject
     private lateinit var pluginManager: PluginManager
+
     @Inject
     private lateinit var eventManager: EventManager
+
     @Inject
     private lateinit var serviceManager: InkServiceManager
 
-    fun init(){
+    fun init() {
         if (setting.banner) {
             BannerPrinter.print(System.out)
         }

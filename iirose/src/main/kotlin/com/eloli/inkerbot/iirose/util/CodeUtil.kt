@@ -25,33 +25,34 @@ object CodeUtil {
         }
         return out.toByteArray()
     }
-    fun decode(input:String):String{
+
+    fun decode(input: String): String {
         return StringEscapeUtils.UNESCAPE_HTML4.translate(input)
     }
 
-    fun decode(input:List<String>):List<String>{
+    fun decode(input: List<String>): List<String> {
         return input.map {
             decode(it)
         }
     }
 
-    fun decode(input:Array<String>):Array<String>{
+    fun decode(input: Array<String>): Array<String> {
         return input.map {
             decode(it)
         }.toTypedArray()
     }
 
-    fun encode(input:String):String{
+    fun encode(input: String): String {
         return StringEscapeUtils.ESCAPE_HTML4.translate(input)
     }
 
-    fun encode(input:List<String>):List<String>{
+    fun encode(input: List<String>): List<String> {
         return input.map {
             decode(it)
         }
     }
 
-    fun encode(input:Array<String>):Array<String>{
+    fun encode(input: Array<String>): Array<String> {
         return input.map {
             decode(it)
         }.toTypedArray()

@@ -9,9 +9,9 @@ object MiraiMuiltComponentUtil {
     fun toMirai(component: MuiltComponent): Message {
         var result: Message? = null
         for (sub in component.subs) {
-            if(result == null){
+            if (result == null) {
                 result = MiraiMessageUtil.toMirai(sub)
-            }else{
+            } else {
                 result += MiraiMessageUtil.toMirai(sub)
             }
         }

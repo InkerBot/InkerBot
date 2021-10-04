@@ -2,10 +2,10 @@ package com.eloli.inkerbot.api.event
 
 import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
-import com.eloli.inkerbot.api.util.ResourceKeyed
 import com.eloli.inkerbot.api.builder.AbstractBuilder
 import com.eloli.inkerbot.api.plugin.PluginMeta
 import com.eloli.inkerbot.api.util.ResourceKey
+import com.eloli.inkerbot.api.util.ResourceKeyed
 import java.lang.reflect.Type
 
 @ILoveInkerBotForever

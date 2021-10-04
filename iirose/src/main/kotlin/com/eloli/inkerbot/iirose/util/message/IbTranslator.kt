@@ -5,7 +5,7 @@ import com.eloli.inkerbot.api.model.message.MuiltComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 
 object IbTranslator {
-    fun toIb(message:MessageComponent):String {
+    fun toIb(message: MessageComponent): String {
         return when (message) {
             is MuiltComponent -> {
                 val result = StringBuilder()

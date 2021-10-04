@@ -4,5 +4,5 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface Named {
-    val name:String
+    val name: String
 }

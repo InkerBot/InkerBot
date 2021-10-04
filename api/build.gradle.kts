@@ -18,7 +18,7 @@ dependencies {
     api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
 }
 
-kotlin{
+kotlin {
     experimental {
         coroutines = org.jetbrains.kotlin.gradle.dsl.Coroutines.ENABLE
     }

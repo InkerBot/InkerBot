@@ -9,10 +9,11 @@ import java.io.FileNotFoundException
 import javax.inject.Singleton
 
 @Singleton
-class InkPluginManager: PluginManager {
+class InkPluginManager : PluginManager {
     companion object {
         const val FAILED_TO_LOAD = "Failed to load plugin {}."
     }
+
     override val plugins: MutableCollection<PluginContainer> = ArrayList()
 
     private val logger = LoggerFactory.getLogger("plugin-manager")
@@ -82,7 +83,7 @@ class InkPluginManager: PluginManager {
                 if (depend.type == PluginDepend.Type.SOFT) {
                     continue
                 }
-                if(target == null){
+                if (target == null) {
                     throw NullPointerException(
                         "Can't found " + plugin.name + "'s depend " + depend.name
                     )

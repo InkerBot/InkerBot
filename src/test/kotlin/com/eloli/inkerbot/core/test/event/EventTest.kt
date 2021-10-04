@@ -11,19 +11,20 @@ import javax.inject.Inject
 @InjectTest
 class EventTest {
     @Inject
-    private lateinit var eventManager:EventManager
+    private lateinit var eventManager: EventManager
+
     @Inject
-    private lateinit var plugin:InkerBotPluginContainer
+    private lateinit var plugin: InkerBotPluginContainer
 
     @Test
-    fun postEvent(){
+    fun postEvent() {
         eventManager.post(AEvent())
     }
 
     @Test
-    fun listenEvent(){
-        val called:AtomicBoolean = AtomicBoolean(false)
-        eventManager.registerListener(plugin,AEvent::class.java, object : EventListener<AEvent> {
+    fun listenEvent() {
+        val called: AtomicBoolean = AtomicBoolean(false)
+        eventManager.registerListener(plugin, AEvent::class.java, object : EventListener<AEvent> {
             override fun handle(event: AEvent) {
                 called.set(true)
             }

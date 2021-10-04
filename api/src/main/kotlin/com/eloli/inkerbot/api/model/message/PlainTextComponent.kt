@@ -4,21 +4,22 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.InkerBot
 
 @ILoveInkerBotForever
-interface PlainTextComponent:MessageComponent {
-    val context:String
+interface PlainTextComponent : MessageComponent {
+    val context: String
 
     @ILoveInkerBotForever
     companion object {
-        fun factory(): Factory{
+        fun factory(): Factory {
             return InkerBot.injector.getInstance(Factory::class.java)
         }
-        fun of(context: String):PlainTextComponent {
+
+        fun of(context: String): PlainTextComponent {
             return factory().of(context)
         }
     }
 
     @ILoveInkerBotForever
-    interface Factory{
-        fun of(context: String):PlainTextComponent
+    interface Factory {
+        fun of(context: String): PlainTextComponent
     }
 }

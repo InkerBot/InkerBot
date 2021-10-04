@@ -1,8 +1,6 @@
 package com.eloli.inkerbot.core.config
 
 import org.yaml.snakeyaml.introspector.BeanAccess
-import java.util.LinkedHashSet
-import java.util.HashSet
 import org.yaml.snakeyaml.introspector.FieldProperty
 import org.yaml.snakeyaml.introspector.Property
 import org.yaml.snakeyaml.introspector.PropertyUtils

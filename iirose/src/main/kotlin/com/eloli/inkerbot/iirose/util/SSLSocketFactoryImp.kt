@@ -1,17 +1,16 @@
 package com.eloli.inkerbot.iirose.util
 
-import java.security.KeyStore
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
-import kotlin.Throws
 import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.net.UnknownHostException
+import java.security.KeyStore
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
+import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 class SSLSocketFactoryImp(keyStore: KeyStore?) : SSLSocketFactory() {
     val sSLContext = SSLContext.getInstance("SSL")

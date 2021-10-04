@@ -11,12 +11,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InkServiceManager: ProxyInjector(),ServiceManager {
+class InkServiceManager : ProxyInjector(), ServiceManager {
     @Inject
     private lateinit var eventManager: EventManager
     fun init() {
         registerProxyInjector(
-            InkerBot.injector.createChildInjector(object : Module{
+            InkerBot.injector.createChildInjector(object : Module {
                 override fun configure(binder: Binder) {
                     eventManager.post(InkLifecycleEvent.RegisterService(binder))
                 }

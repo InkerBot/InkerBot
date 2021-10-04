@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.event.events.GroupMessageEvent
 
-class GroupMessageEventHandler:Handler {
+class GroupMessageEventHandler : Handler {
     @Inject
     private lateinit var eventManager: EventManager;
     override fun register(bot: Bot) {

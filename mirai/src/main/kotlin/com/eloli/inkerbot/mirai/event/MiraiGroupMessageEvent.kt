@@ -10,7 +10,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent
 
 class MiraiGroupMessageEvent(
     handle: GroupMessageEvent
-) :MessageEvent {
+) : MessageEvent {
     override val sender: Sender = MiraiGroupSender(handle.sender)
     override val reply: Receiver = MiraiGroupReceiver(handle.group)
     override val message: MessageComponent = MiraiMessageUtil.toInk(handle.message)

@@ -27,23 +27,29 @@ import kotlin.concurrent.timer
 class IbConnection {
     @Inject
     private lateinit var ibConfig: IbConfig
+
     @Inject
     private lateinit var wsListener: WsListener
+
     @Inject
     private lateinit var logger: Logger
+
     @Inject
     private lateinit var eventManager: EventManager
+
     @Inject
     private lateinit var plugin: PluginContainer
-    private val gson =Gson()
+    private val gson = Gson()
 
-    private lateinit var ws:WebSocket
+    private lateinit var ws: WebSocket
 
-    fun onBoot(){
+    fun onBoot() {
         eventManager.registerListeners(plugin, this)
         runBlocking {
-            val trustStore = KeyStore.getInstance(KeyStore
-                .getDefaultType());
+            val trustStore = KeyStore.getInstance(
+                KeyStore
+                    .getDefaultType()
+            );
             trustStore.load(null, null);
             val ssl = SSLSocketFactoryImp(trustStore)
             val client = OkHttpClient.Builder()
@@ -55,11 +61,13 @@ class IbConnection {
                 .url(ibConfig.wsUrl)
                 .build()
             ws = client.newWebSocket(request, wsListener)
-            ws.send(LoginJson.Factory.of(
-                ibConfig.room,
-                ibConfig.username,
-                ibConfig.password
-            ).toString())
+            ws.send(
+                LoginJson.Factory.of(
+                    ibConfig.room,
+                    ibConfig.username,
+                    ibConfig.password
+                ).toString()
+            )
 
             timer(period = 5000) {
                 ws.send("s")
@@ -68,30 +76,31 @@ class IbConnection {
     }
 
     @EventHandler
-    fun onMessage(event:IbSocketEvent.Message){
+    fun onMessage(event: IbSocketEvent.Message) {
         for (s in event.message.split("<")) {
             eventManager.post(IbRawMessageEvent(s))
         }
     }
 
     @EventHandler(order = Order.POST)
-    fun onSendMessage(event:IbSendRawMessageEvent){
+    fun onSendMessage(event: IbSendRawMessageEvent) {
         ws.send(event.message)
     }
 
     class WsListener : WebSocketListener() {
         @Inject
         private lateinit var logger: Logger
+
         @Inject
         private lateinit var eventManager: EventManager
         override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
             logger.debug("onClose: code={}, reason={}", code, reason)
-            eventManager.post(IbSocketEvent.Closed(code,reason))
+            eventManager.post(IbSocketEvent.Closed(code, reason))
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
             logger.debug("onClosing: code={}, reason={}", code, reason)
-            eventManager.post(IbSocketEvent.Closing(code,reason))
+            eventManager.post(IbSocketEvent.Closing(code, reason))
         }
 
         override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -106,9 +115,9 @@ class IbConnection {
 
         override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
             logger.debug("onMessageBytes: size={}", bytes.size)
-            val message:String = if (bytes.startsWith("01".decodeHex())){
+            val message: String = if (bytes.startsWith("01".decodeHex())) {
                 CodeUtil.deGzip(bytes.substring(1).toByteArray()).toString(Charsets.UTF_8)
-            }else{
+            } else {
                 bytes.string(Charsets.UTF_8)
             }
             logger.trace("onMessageBytes: message={}", message)

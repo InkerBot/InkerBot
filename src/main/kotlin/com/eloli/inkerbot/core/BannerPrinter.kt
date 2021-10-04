@@ -11,6 +11,7 @@ object BannerPrinter {
         "/___/_/ /_/_/|_|\\___/_/  /_____/\\____/\\__/  ",
         "                                            ",
     )
+
     fun print(out: PrintStream) {
         for (s in INKER_BOT_BANNER) {
             out.println(s)

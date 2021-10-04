@@ -3,8 +3,8 @@ package com.eloli.inkerbot.core.plugin
 import com.eloli.inkerbot.api.plugin.PluginDepend
 import java.util.*
 
-class InkPluginDepend(override val name: String, override val type: PluginDepend.Type) :PluginDepend {
-    class Builder:PluginDepend.Builder {
+class InkPluginDepend(override val name: String, override val type: PluginDepend.Type) : PluginDepend {
+    class Builder : PluginDepend.Builder {
         var name: String? = null
         var type: PluginDepend.Type? = null
         override fun name(name: String): PluginDepend.Builder {

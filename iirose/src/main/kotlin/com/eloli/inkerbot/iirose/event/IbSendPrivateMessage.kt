@@ -29,10 +29,16 @@ class IbSendPrivateMessage(
             ))
         }
     }
+
+
     class Packet{
         lateinit var g:String
         lateinit var m:String
         lateinit var mc:String
         var i:Long = 0L
+    }
+
+    override fun toString(): String {
+        return "IbSendPrivateMessage(target='$target', message='$message', color='$color', context=$context)"
     }
 }

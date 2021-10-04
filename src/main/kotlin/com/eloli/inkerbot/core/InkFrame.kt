@@ -4,8 +4,6 @@ import com.eloli.inkerbot.api.Frame
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.plugin.PluginManager
-import com.eloli.inkerbot.api.event.lifestyle.LifeStyleEvent
-import com.eloli.inkerbot.core.event.lifestyle.InkLifeStyleEvent
 import com.eloli.inkerbot.core.setting.InkSetting
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

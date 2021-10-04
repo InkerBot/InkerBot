@@ -1,8 +1,7 @@
 package com.eloli.inkerbot.api.service
 
-import org.ktorm.database.Database
-import javax.inject.Provider
+import org.hibernate.Session
 
-interface DatabaseService:Provider<Database> {
-
+interface DatabaseService {
+    val session:Session
 }

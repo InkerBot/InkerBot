@@ -1,6 +1,5 @@
 package com.eloli.inkerbot.mirai.model
 
-import com.eloli.inkerbot.api.model.Receiver
 import com.eloli.inkerbot.api.model.message.MessageComponent
 import com.eloli.inkerbot.api.util.Identity
 import com.eloli.inkerbot.api.util.ResourceKey

@@ -24,7 +24,7 @@ import java.nio.file.Path
 class JvmPluginContainer(val jarFile: File) : PluginContainer{
     private val gson: Gson = Gson()
     lateinit var injector: Injector
-    lateinit var pluginLoader: JvmPluginClassloader
+    override lateinit var loader: JvmPluginClassloader
     override lateinit var meta: PluginMeta
     override lateinit var logger: Logger
 
@@ -43,16 +43,16 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
 
     override fun addDepend(depend: PluginContainer) {
         require(depend is JvmPluginContainer) { "Only java plugin could depend on." }
-        pluginLoader.addDepend(depend.pluginLoader)
+        loader.addDepend(depend.loader)
     }
 
     override fun load() {
-        this.pluginLoader = JvmPluginClassloader(jarFile.toURI().toURL(), InkerBot.frame.classLoader)
+        this.loader = JvmPluginClassloader(jarFile.toURI().toURL(), InkerBot.frame.classLoader)
         loadMeta()
         val dependencyResolver = InkerBot.injector.getInstance(DependencyResolver::class.java)
         for (depend in meta.depends) {
             if (depend.type == PluginDepend.Type.LIBRARY) {
-                this.pluginLoader.addURL(
+                this.loader.addURL(
                     dependencyResolver.getDependencyFile(depend.name).toURI().toURL()
                 )
             }
@@ -60,7 +60,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
     }
 
     private fun loadMeta() {
-        val metaStream: InputStream = this.pluginLoader.getResourceAsStream("META-INF/plugin.json")
+        val metaStream: InputStream = this.loader.getResourceAsStream("META-INF/plugin.json")
             ?: throw FileNotFoundException("No META-INF/plugin.json found in $jarFile")
         val metaReader = InputStreamReader(metaStream)
         meta = ReadPluginJson.read(metaReader)
@@ -71,7 +71,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
     override fun enable() {
         enabled = true
         logger = LoggerFactory.getLogger("plugin@$name")
-        val mainClass = pluginLoader.loadClass(meta.main)
+        val mainClass = loader.loadClass(meta.main)
         val jvmPlugin:JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
         if(jvmPlugin::class.java.getAnnotation(ILoveInkerBotForever::class.java) != null){
             logger.error("=".repeat(29))
@@ -94,7 +94,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer{
                     logger.warn("Failed to constructor {}'s Module class {}.", this.name, mainClass.name)
                 }
             })
-        StaticEntryUtil.applyInjector(pluginLoader, injector)
+        StaticEntryUtil.applyInjector(loader, injector)
         injector.injectMembers(jvmPlugin)
         InkerBot.eventManager.registerListeners(this, jvmPlugin)
     }

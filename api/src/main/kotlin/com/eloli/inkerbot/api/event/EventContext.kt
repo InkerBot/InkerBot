@@ -10,16 +10,16 @@ class EventContext private constructor(values: Map<EventContextKey<*>, Any>) {
     private val entries: Map<EventContextKey<*>, *>
     operator fun <T> get(key: EventContextKey<T>): Optional<T> {
         Objects.requireNonNull(key, "EventContextKey cannot be null")
-        return Optional.ofNullable(entries.get(key) as T)
+        return Optional.ofNullable(entries[key] as T)
     }
 
     operator fun <T> get(key: Supplier<EventContextKey<T>>): Optional<T> {
         Objects.requireNonNull(key, "EventContextKey cannot be null")
-        return Optional.ofNullable(entries.get(key.get()) as T)
+        return Optional.ofNullable(entries[key.get()] as T)
     }
 
     fun <T> require(key: EventContextKey<T>): T {
-        val optional = this.get(key)
+        val optional = this[key]
         if (optional.isPresent) {
             return optional.get()
         }

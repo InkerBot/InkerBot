@@ -4,8 +4,8 @@ import com.eloli.inkerbot.api.event.EventContext
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.message.MessageEvent
-import com.eloli.inkerbot.api.model.Receiver
-import com.eloli.inkerbot.api.model.Sender
+import com.eloli.inkerbot.api.model.Group
+import com.eloli.inkerbot.api.model.Member
 import com.eloli.inkerbot.api.model.message.MessageComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.iirose.config.IbConfig
@@ -25,9 +25,19 @@ class IbGroupMessageEvent(
     val time:String
 ):MessageEvent {
     override val context: EventContext = EventContext.empty()
-    override val sender: Sender = IbMember(userId, userName)
-    override val reply: Receiver = IbGroup()
+    override val sender: Member = IbMember.of(userId, userName)
+    val group: Group = IbGroup.current()
+
     override val message: MessageComponent = PlainTextComponent.of(message)
+    override fun sendMessage(message: MessageComponent) {
+        group.sendMessage(message)
+    }
+
+    override fun toString(): String {
+        return "IbGroupMessageEvent(color='$color', id='$id', userId='$userId', userName='$userName', userTag='$userTag', avatar='$avatar', time='$time', context=$context, sender=$sender, group=$group, message=$message)"
+    }
+
+
     @Singleton
     class Resolver {
         private val startAt = System.currentTimeMillis()/1000

@@ -6,12 +6,11 @@ import com.eloli.inkerbot.api.config.ConfigService
 import com.eloli.inkerbot.api.event.EventContextKey
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.api.event.lifestyle.LifeStyleEvent
+import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
 import com.eloli.inkerbot.api.model.message.AtComponent
 import com.eloli.inkerbot.api.model.message.MuiltComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.api.plugin.*
-import com.eloli.inkerbot.api.registry.Registrar
 import com.eloli.inkerbot.api.registry.Registry
 import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.api.util.Identity
@@ -34,9 +33,8 @@ import com.eloli.inkerbot.core.setting.ImplSettingProvider
 import com.eloli.inkerbot.core.util.InkIdentity
 import com.eloli.inkerbot.core.util.InkResourceKey
 import com.google.inject.Binder
-import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
-import org.ktorm.database.Database
+import org.hibernate.Session
 
 class InkerBotModule : JvmPlugin {
     override fun configure(binder: Binder) {
@@ -64,11 +62,11 @@ class InkerBotModule : JvmPlugin {
         binder.bind(Frame::class.java).to(InkFrame::class.java)
         binder.bind(ServiceManager::class.java).to(InkServiceManager::class.java)
         binder.bind(DatabaseService::class.java).to(InkDatabaseService::class.java)
-        binder.bind(Database::class.java).toProvider(DatabaseService::class.java)
+//        binder.bind(Session::class.java).to(InkDatabaseService::class.java)
     }
 
     @EventHandler
-    fun onRegisterService(e:LifeStyleEvent.RegisterService) {
+    fun onRegisterService(e:LifecycleEvent.RegisterService) {
         e.binder.bind(DatabaseService::class.java).annotatedWith(Names.named("h2")).to(H2DatabaseService::class.java)
         // e.binder.bind(object :TypeLiteral<Registrar<String>>() {}).annotatedWith(Names.named("a:b")).to(InkRegistryKey::class.java)
     }

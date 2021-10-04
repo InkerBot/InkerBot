@@ -8,7 +8,6 @@ class JvmPluginClassloader(url: URL, parent: ClassLoader) : URLClassLoader(array
 
     private val depends: MutableCollection<ClassLoader> = java.util.ArrayList()
 
-    @Throws(ClassNotFoundException::class)
     override fun loadClass(name: String, resolve: Boolean): Class<*> {
         synchronized(getClassLoadingLock(name)) {
             var c = super.findLoadedClass(name)
@@ -42,7 +41,6 @@ class JvmPluginClassloader(url: URL, parent: ClassLoader) : URLClassLoader(array
         }
     }
 
-    @Throws(ClassNotFoundException::class)
     private fun rewriteStaticEntry(name: String): Class<*>? {
         if (StaticEntryUtil.isStaticEntry(name)) {
             val bytes: ByteArray = StaticEntryUtil.getEntryBuffer(name)

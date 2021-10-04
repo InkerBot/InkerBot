@@ -6,4 +6,8 @@ import com.eloli.inkerbot.iirose.util.CodeUtil
 
 class IbSendRawMessageEvent(val message:String):Event{
     override val context: EventContext = EventContext.empty()
+    override fun toString(): String {
+        return "IbSendRawMessageEvent(message='$message', context=$context)"
+    }
+
 }

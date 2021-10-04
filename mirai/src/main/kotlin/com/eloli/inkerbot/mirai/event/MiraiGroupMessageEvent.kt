@@ -2,8 +2,6 @@ package com.eloli.inkerbot.mirai.event
 
 import com.eloli.inkerbot.api.event.EventContext
 import com.eloli.inkerbot.api.event.message.MessageEvent
-import com.eloli.inkerbot.api.model.Receiver
-import com.eloli.inkerbot.api.model.Sender
 import com.eloli.inkerbot.api.model.message.MessageComponent
 import com.eloli.inkerbot.mirai.model.MiraiGroupReceiver
 import com.eloli.inkerbot.mirai.model.MiraiGroupSender

@@ -14,8 +14,8 @@ dependencies {
     api("org.slf4j:slf4j-api:1.7.32")
     api("com.google.code.gson:gson:2.8.8")
     api("org.yaml:snakeyaml:1.29")
-    api("org.ktorm:ktorm-core:3.4.1")
     api("com.squareup.okhttp3:okhttp:4.9.1")
+    api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
 }
 
 kotlin{

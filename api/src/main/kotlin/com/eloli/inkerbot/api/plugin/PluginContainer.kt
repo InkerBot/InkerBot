@@ -9,6 +9,7 @@ import java.nio.file.Path
 interface PluginContainer {
     val name: String
     val meta: PluginMeta
+    val loader:ClassLoader
     val logger: Logger
     val dataPath: Path
     val configPath: Path

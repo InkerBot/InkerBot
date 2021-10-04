@@ -10,6 +10,8 @@ class IbSendRoomMessage(
     val color: String = "ffffff"
 ):Event {
     override val context: EventContext = EventContext.empty()
+
+
     @Singleton
     class Resolver{
         private val gson = Gson()
@@ -31,5 +33,9 @@ class IbSendRoomMessage(
         lateinit var m:String
         lateinit var mc:String
         var i:Long = 0L
+    }
+
+    override fun toString(): String {
+        return "IbSendRoomMessage(message='$message', color='$color', context=$context)"
     }
 }

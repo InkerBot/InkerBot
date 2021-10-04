@@ -15,7 +15,7 @@ import com.eloli.inkerbot.iirose.model.IbMember
 import javax.inject.Inject
 import javax.inject.Singleton
 
-class IbGroupMessageEvent(
+class IbPrivateMessageEvent(
     message:String,
     val color:String,
     val id:String,
@@ -34,10 +34,6 @@ class IbGroupMessageEvent(
         group.sendMessage(message)
     }
 
-    override fun toString(): String {
-        return "IbGroupMessageEvent(color='$color', id='$id', userId='$userId', userName='$userName', userTag='$userTag', avatar='$avatar', time='$time', context=$context, sender=$sender, group=$group, message=$message)"
-    }
-
 
     @Singleton
     class Resolver {
@@ -52,7 +48,7 @@ class IbGroupMessageEvent(
                 && event.split[0].toLong() > startAt
                 && event.split[2]!=config.username
             ) {
-                eventManager.post(IbGroupMessageEvent(
+                eventManager.post(IbPrivateMessageEvent(
                     event.split[3],
                     event.split[4],
                     event.split[10],

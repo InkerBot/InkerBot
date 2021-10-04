@@ -4,6 +4,7 @@ import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
+import com.eloli.inkerbot.api.event.message.MessageEvent
 import com.eloli.inkerbot.api.model.Group
 import com.eloli.inkerbot.api.model.Member
 import com.eloli.inkerbot.api.plugin.JvmPlugin
@@ -13,6 +14,7 @@ import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.iirose.config.IbConfig
 import com.eloli.inkerbot.iirose.config.IbConfigProvider
 import com.eloli.inkerbot.iirose.event.IbGroupMessageEvent
+import com.eloli.inkerbot.iirose.event.IbPrivateMessageEvent
 import com.eloli.inkerbot.iirose.event.IbSendPrivateMessage
 import com.eloli.inkerbot.iirose.event.IbSendRoomMessage
 import com.eloli.inkerbot.iirose.registry.IbGroupRegistrar
@@ -44,6 +46,8 @@ class IiroseCore:JvmPlugin {
         eventManager.registerListeners(pluginContainer,
             InkerBot.injector.getInstance(IbGroupMessageEvent.Resolver::class.java))
         eventManager.registerListeners(pluginContainer,
+            InkerBot.injector.getInstance(IbPrivateMessageEvent.Resolver::class.java))
+        eventManager.registerListeners(pluginContainer,
             InkerBot.injector.getInstance(IbSendRoomMessage.Resolver::class.java))
         eventManager.registerListeners(pluginContainer,
             InkerBot.injector.getInstance(IbSendPrivateMessage.Resolver::class.java))
@@ -62,7 +66,7 @@ class IiroseCore:JvmPlugin {
     }
 
     @EventHandler
-    fun onEvent(event: IbGroupMessageEvent){
+    fun onEvent(event: MessageEvent){
         event.sender.sendMessage(event.message)
     }
 }

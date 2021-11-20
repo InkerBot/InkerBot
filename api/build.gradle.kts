@@ -1,10 +1,6 @@
 group = "com.eloli"
 version = "1.0-SNAPSHOT"
 
-repositories {
-    maven("https://maven.aliyun.com/repository/public")
-}
-
 dependencies {
     api(kotlin("stdlib"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
@@ -16,6 +12,8 @@ dependencies {
     api("org.yaml:snakeyaml:1.29")
     api("com.squareup.okhttp3:okhttp:4.9.1")
     api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
+    api("com.mojang:brigadier:1.0.18")
+
 }
 
 kotlin {

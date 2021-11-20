@@ -2,7 +2,9 @@ package com.eloli.inkerbot.api.event.lifestyle
 
 import com.eloli.inkerbot.api.ILoveInkerBotForever
 import com.eloli.inkerbot.api.event.Event
+import com.eloli.inkerbot.api.event.message.MessageEvent
 import com.google.inject.Binder
+import com.mojang.brigadier.tree.CommandNode
 
 @ILoveInkerBotForever
 interface LifecycleEvent:Event {
@@ -16,5 +18,8 @@ interface LifecycleEvent:Event {
     interface RegisterEntity: LifecycleEvent{
         fun register(entity:Class<*>)
     }
-
+    @ILoveInkerBotForever
+    interface RegisterCommand: LifecycleEvent{
+        fun register(command: CommandNode<MessageEvent>)
+    }
 }

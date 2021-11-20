@@ -2,7 +2,9 @@ package com.eloli.inkerbot.core.event.lifestyle
 
 import com.eloli.inkerbot.api.event.EventContext
 import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
+import com.eloli.inkerbot.api.event.message.MessageEvent
 import com.google.inject.Binder
+import com.mojang.brigadier.tree.CommandNode
 import javax.inject.Singleton
 
 @Singleton
@@ -17,6 +19,11 @@ abstract class InkLifecycleEvent:LifecycleEvent {
     class RegisterEntity(private val action: (Class<*>)->Unit):InkLifecycleEvent(), LifecycleEvent.RegisterEntity{
         override fun register(entity: Class<*>) {
             action.invoke(entity)
+        }
+    }
+    class RegisterCommand(private val action: (CommandNode<MessageEvent>)->Unit):InkLifecycleEvent(), LifecycleEvent.RegisterCommand{
+        override fun register(command: CommandNode<MessageEvent>) {
+            action.invoke(command)
         }
     }
 }

@@ -41,4 +41,12 @@ class InkMuilt private constructor(override val subs: List<MessageComponent>) : 
             return MuiltComponent.factory().of(subs)
         }
     }
+
+    override fun toString(): String {
+        val builder = StringBuilder()
+        for (sub in subs) {
+            builder.append(builder.toString())
+        }
+        return builder.toString()
+    }
 }

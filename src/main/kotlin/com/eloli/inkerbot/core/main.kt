@@ -2,8 +2,8 @@ package com.eloli.inkerbot.core
 
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
 import com.eloli.inkerbot.core.event.lifestyle.InkLifecycleEvent
+import com.eloli.inkerbot.core.command.InkCommandService
 import com.eloli.inkerbot.core.util.StaticEntryUtil
 import com.google.inject.Guice
 import org.apache.log4j.BasicConfigurator
@@ -21,7 +21,10 @@ fun main() {
         inkerBotModule
     )
 
-    LifecycleEvent.Enable::class.java
+    InkerBot.injector.getInstance(EventManager::class.java).registerListeners(
+        InkerBot.injector.getInstance(InkerBotPluginContainer::class.java),
+        InkerBot.injector.getInstance(InkCommandService::class.java)
+    )
 
     // Load Plugins
     InkerBot.injector.getInstance(InkFrame::class.java).init()

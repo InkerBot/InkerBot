@@ -5,6 +5,7 @@ import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.message.GroupMessageEvent
 import com.eloli.inkerbot.api.event.message.MessageEvent
+import com.eloli.inkerbot.api.event.message.PrivateMessageEvent
 import com.eloli.inkerbot.api.model.Group
 import com.eloli.inkerbot.api.model.Member
 import com.eloli.inkerbot.api.model.message.MessageComponent
@@ -23,23 +24,21 @@ class IbPrivateMessageEvent(
     userName:String,
     avatar:String,
     val time:Long,
-):GroupMessageEvent {
+):PrivateMessageEvent {
     override val context: EventContext = EventContext.empty()
     override val sender: Member = IbMember.update(userId){
         it.name = userName
         it.avatar = avatar
     }
-    override val group: Group = IbGroup.current()
-
     override val message: MessageComponent = PlainTextComponent.of(message)
 
 
     override fun sendMessage(message: MessageComponent) {
-        group.sendMessage(message)
+        sender.sendMessage(message)
     }
 
     override fun toString(): String {
-        return "IbPrivateMessageEvent(color='$color', id='$id', time=$time, sender=$sender, group=$group, message=$message)"
+        return "IbPrivateMessageEvent(color='$color', id='$id', time=$time, sender=$sender, message=$message)"
     }
 
     // "1637396522>5e5f9bd4b3e62>InkerBot>http://r.iirose.com/i/21/9/17/0/1438-GH.jpg>imink>847fc1>>847fc1>1>>226225061655

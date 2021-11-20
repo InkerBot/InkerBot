@@ -18,6 +18,7 @@ import okio.ByteString
 import okio.ByteString.Companion.decodeHex
 import org.slf4j.Logger
 import java.security.KeyStore
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,7 +42,10 @@ class IbConnection {
     private lateinit var plugin: PluginContainer
     private val gson = Gson()
 
+    private lateinit var client:OkHttpClient
+    private lateinit var request:Request
     private lateinit var ws: WebSocket
+    private lateinit var timer:Timer
 
     fun onBoot() {
         eventManager.registerListeners(plugin, this)
@@ -52,12 +56,12 @@ class IbConnection {
             );
             trustStore.load(null, null);
             val ssl = SSLSocketFactoryImp(trustStore)
-            val client = OkHttpClient.Builder()
+            client = OkHttpClient.Builder()
                 .pingInterval(5, TimeUnit.SECONDS)
                 .sslSocketFactory(ssl.sSLContext.socketFactory, ssl.getTrustManager())
                 .hostnameVerifier { _, _ -> true }
                 .build()
-            val request = Request.Builder()
+            request = Request.Builder()
                 .url(ibConfig.wsUrl)
                 .build()
             ws = client.newWebSocket(request, wsListener)
@@ -69,7 +73,7 @@ class IbConnection {
                 ).toString()
             )
 
-            timer(period = 5000) {
+            timer = timer(period = 5000) {
                 ws.send("s")
             }
         }
@@ -85,6 +89,26 @@ class IbConnection {
     @EventHandler(order = Order.POST)
     fun onSendMessage(event: IbSendRawMessageEvent) {
         ws.send(event.message)
+    }
+
+    @EventHandler(order = Order.POST)
+    fun onFailure(event: IbSocketEvent.Failure) {
+        runBlocking {
+            timer.cancel()
+
+            ws = client.newWebSocket(request, wsListener)
+            ws.send(
+                LoginJson.Factory.of(
+                    ibConfig.room,
+                    ibConfig.username,
+                    ibConfig.password
+                ).toString()
+            )
+
+            timer = timer(period = 5000) {
+                ws.send("s")
+            }
+        }
     }
 
     class WsListener : WebSocketListener() {

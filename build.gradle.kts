@@ -9,9 +9,13 @@ subprojects {
     apply(plugin = "kotlin")
 }
 
-repositories {
-    maven("https://maven.aliyun.com/repository/public")
+allprojects {
+    repositories {
+        maven("https://maven.aliyun.com/repository/public")
+        maven("https://libraries.minecraft.net")
+    }
 }
+
 dependencies {
     api(project(":api"))
 

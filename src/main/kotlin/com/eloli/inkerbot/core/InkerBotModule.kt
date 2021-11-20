@@ -11,9 +11,9 @@ import com.eloli.inkerbot.api.model.message.AtComponent
 import com.eloli.inkerbot.api.model.message.MuiltComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.api.plugin.*
-import com.eloli.inkerbot.api.registry.Registrar
 import com.eloli.inkerbot.api.registry.Registry
 import com.eloli.inkerbot.api.registry.UpdatableRegistrar
+import com.eloli.inkerbot.api.service.CommandService
 import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.api.util.Identity
 import com.eloli.inkerbot.api.util.ResourceKey
@@ -30,6 +30,7 @@ import com.eloli.inkerbot.core.plugin.InkPluginUrls
 import com.eloli.inkerbot.core.registry.InkRegistrar
 import com.eloli.inkerbot.core.registry.InkRegistry
 import com.eloli.inkerbot.core.service.H2DatabaseService
+import com.eloli.inkerbot.core.command.InkCommandService
 import com.eloli.inkerbot.core.service.InkDatabaseService
 import com.eloli.inkerbot.core.setting.InkSetting
 import com.eloli.inkerbot.core.setting.ImplSettingProvider
@@ -37,7 +38,6 @@ import com.eloli.inkerbot.core.util.InkIdentity
 import com.eloli.inkerbot.core.util.InkResourceKey
 import com.google.inject.Binder
 import com.google.inject.name.Names
-import org.hibernate.Session
 
 class InkerBotModule : JvmPlugin {
     override fun configure(binder: Binder) {
@@ -66,6 +66,7 @@ class InkerBotModule : JvmPlugin {
         binder.bind(Frame::class.java).to(InkFrame::class.java)
         binder.bind(ServiceManager::class.java).to(InkServiceManager::class.java)
         binder.bind(DatabaseService::class.java).to(InkDatabaseService::class.java)
+        binder.bind(CommandService::class.java).to(InkCommandService::class.java)
 //        binder.bind(Session::class.java).to(InkDatabaseService::class.java)
     }
 

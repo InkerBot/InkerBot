@@ -19,6 +19,9 @@ dependencies {
     api("org.apache.maven.resolver:maven-resolver-connector-basic:1.7.1")
     api("org.apache.maven.resolver:maven-resolver-transport-http:1.7.1")
     api("org.apache.maven:maven-resolver-provider:3.8.1")
+    api("commons-beanutils:commons-beanutils:1.9.4")
+
+
 
     implementation("org.apache.logging.log4j:log4j-api:2.14.1")
     implementation("org.apache.logging.log4j:log4j-core:2.14.1")

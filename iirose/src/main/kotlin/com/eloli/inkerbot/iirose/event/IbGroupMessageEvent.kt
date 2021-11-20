@@ -23,10 +23,14 @@ class IbGroupMessageEvent(
     val userName:String,
     val userTag:String,
     val avatar:String,
-    val time:String
+    val time:Long
 ):GroupMessageEvent {
     override val context: EventContext = EventContext.empty()
-    override val sender: Member = IbMember.of(userId, userName)
+    override val sender: Member = IbMember.update(userId){
+        it.name = userName
+        it.avatar = avatar
+        it.userTag = userTag
+    }
     override val group: Group = IbGroup.current()
 
     override val message: MessageComponent = PlainTextComponent.of(message)
@@ -35,9 +39,8 @@ class IbGroupMessageEvent(
     }
 
     override fun toString(): String {
-        return "IbGroupMessageEvent(color='$color', id='$id', userId='$userId', userName='$userName', userTag='$userTag', avatar='$avatar', time='$time', context=$context, sender=$sender, group=$group, message=$message)"
+        return "IbGroupMessageEvent(color='$color', id='$id', userId='$userId', userName='$userName', userTag='$userTag', avatar='$avatar', time=$time, sender=$sender, group=$group, message=$message)"
     }
-
 
     @Singleton
     class Resolver {
@@ -49,6 +52,7 @@ class IbGroupMessageEvent(
         @EventHandler
         fun onMessage(event: IbRawMessageEvent){
             if (event.split.size == 11
+                && !event.split[0].startsWith("\"")
                 && event.split[0].toLong() > startAt
                 && event.split[2]!=config.username
             ) {
@@ -60,7 +64,7 @@ class IbGroupMessageEvent(
                     event.split[2],
                     event.split[9],
                     event.split[1],
-                    event.split[0]
+                    event.split[0].toLong()
                 ))
             }
         }

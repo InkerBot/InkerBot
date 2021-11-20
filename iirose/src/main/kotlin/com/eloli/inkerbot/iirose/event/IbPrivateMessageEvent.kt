@@ -19,22 +19,30 @@ class IbPrivateMessageEvent(
     message:String,
     val color:String,
     val id:String,
-    val userId:String,
-    val userName:String,
-    val userTag:String,
-    val avatar:String,
-    val time:String
+    userId:String,
+    userName:String,
+    avatar:String,
+    val time:Long,
 ):GroupMessageEvent {
     override val context: EventContext = EventContext.empty()
-    override val sender: Member = IbMember.of(userId, userName)
+    override val sender: Member = IbMember.update(userId){
+        it.name = userName
+        it.avatar = avatar
+    }
     override val group: Group = IbGroup.current()
 
     override val message: MessageComponent = PlainTextComponent.of(message)
+
+
     override fun sendMessage(message: MessageComponent) {
         group.sendMessage(message)
     }
 
+    override fun toString(): String {
+        return "IbPrivateMessageEvent(color='$color', id='$id', time=$time, sender=$sender, group=$group, message=$message)"
+    }
 
+    // "1637396522>5e5f9bd4b3e62>InkerBot>http://r.iirose.com/i/21/9/17/0/1438-GH.jpg>imink>847fc1>>847fc1>1>>226225061655
     @Singleton
     class Resolver {
         private val startAt = System.currentTimeMillis()/1000
@@ -45,18 +53,18 @@ class IbPrivateMessageEvent(
         @EventHandler
         fun onMessage(event: IbRawMessageEvent){
             if (event.split.size == 11
-                && event.split[0].toLong() > startAt
+                && event.split[0].startsWith("\"")
+                && event.split[0].substring(1).toLong() > startAt
                 && event.split[2]!=config.username
             ) {
                 eventManager.post(IbPrivateMessageEvent(
-                    event.split[3],
                     event.split[4],
+                    event.split[5],
                     event.split[10],
-                    event.split[8],
-                    event.split[2],
-                    event.split[9],
                     event.split[1],
-                    event.split[0]
+                    event.split[2],
+                    event.split[3],
+                    event.split[0].substring(1).toLong()
                 ))
             }
         }

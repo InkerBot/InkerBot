@@ -11,7 +11,9 @@ import com.eloli.inkerbot.api.model.message.AtComponent
 import com.eloli.inkerbot.api.model.message.MuiltComponent
 import com.eloli.inkerbot.api.model.message.PlainTextComponent
 import com.eloli.inkerbot.api.plugin.*
+import com.eloli.inkerbot.api.registry.Registrar
 import com.eloli.inkerbot.api.registry.Registry
+import com.eloli.inkerbot.api.registry.UpdatableRegistrar
 import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.api.util.Identity
 import com.eloli.inkerbot.api.util.ResourceKey
@@ -25,6 +27,7 @@ import com.eloli.inkerbot.core.plugin.InkPluginDepend
 import com.eloli.inkerbot.core.plugin.InkPluginManager
 import com.eloli.inkerbot.core.plugin.InkPluginMeta
 import com.eloli.inkerbot.core.plugin.InkPluginUrls
+import com.eloli.inkerbot.core.registry.InkRegistrar
 import com.eloli.inkerbot.core.registry.InkRegistry
 import com.eloli.inkerbot.core.service.H2DatabaseService
 import com.eloli.inkerbot.core.service.InkDatabaseService
@@ -55,6 +58,7 @@ class InkerBotModule : JvmPlugin {
         binder.bind(Identity.Factory::class.java).to(InkIdentity.Factory::class.java)
 
         binder.bind(Registry.Factory::class.java).to(InkRegistry.Factory::class.java)
+        binder.bind(UpdatableRegistrar.Factory::class.java).to(InkRegistrar.Factory::class.java)
 
         binder.bind(ConfigService.Factory::class.java).to(InkConfigService.Factory::class.java)
         binder.bind(InkSetting::class.java).toProvider(ImplSettingProvider::class.java)

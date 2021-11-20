@@ -10,6 +10,7 @@ import com.eloli.inkerbot.api.model.Member
 import com.eloli.inkerbot.api.plugin.JvmPlugin
 import com.eloli.inkerbot.api.plugin.PluginContainer
 import com.eloli.inkerbot.api.registry.Registrar
+import com.eloli.inkerbot.api.registry.UpdatableRegistrar
 import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.iirose.config.IbConfig
 import com.eloli.inkerbot.iirose.config.IbConfigProvider
@@ -17,8 +18,8 @@ import com.eloli.inkerbot.iirose.event.IbGroupMessageEvent
 import com.eloli.inkerbot.iirose.event.IbPrivateMessageEvent
 import com.eloli.inkerbot.iirose.event.IbSendPrivateMessage
 import com.eloli.inkerbot.iirose.event.IbSendRoomMessage
-import com.eloli.inkerbot.iirose.registry.IbGroupRegistrar
-import com.eloli.inkerbot.iirose.registry.IbMemberRegistrar
+import com.eloli.inkerbot.iirose.model.IbGroup
+import com.eloli.inkerbot.iirose.model.IbMember
 import com.google.inject.Binder
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
@@ -55,18 +56,20 @@ class IiroseCore:JvmPlugin {
 
     @EventHandler
     fun onRegisterService(event: LifecycleEvent.RegisterService){
-        event.binder.bind(object : TypeLiteral<Registrar<Member>>() {}).annotatedWith(Names.named("iirose:member")).to(IbMemberRegistrar::class.java)
-        event.binder.bind(object : TypeLiteral<Registrar<Group>>() {}).annotatedWith(Names.named("iirose:room")).to(IbGroupRegistrar::class.java)
+        event.binder.bind(object : TypeLiteral<Registrar<Member>>() {}).annotatedWith(Names.named("iirose:member"))
+            .toInstance(UpdatableRegistrar.of(Member::class.java,IbMember::class.java,IbMember.Record::class.java))
+        event.binder.bind(object : TypeLiteral<Registrar<Group>>() {}).annotatedWith(Names.named("iirose:room"))
+            .toInstance(UpdatableRegistrar.of(Group::class.java,IbGroup::class.java,IbGroup.Record::class.java))
     }
 
     @EventHandler
     fun onRegisterEntity(event: LifecycleEvent.RegisterEntity){
-        event.register(IbGroupRegistrar.IbGroupRecord::class.java)
-        event.register(IbMemberRegistrar.IbMemberRecord::class.java)
+        event.register(IbGroup.Record::class.java)
+        event.register(IbMember.Record::class.java)
     }
 
     @EventHandler
     fun onEvent(event: MessageEvent){
-        event.sender.sendMessage(event.message)
+        // event.sender.sendMessage(event.message)
     }
 }

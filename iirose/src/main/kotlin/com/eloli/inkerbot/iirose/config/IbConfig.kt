@@ -6,10 +6,10 @@ import com.eloli.inkerbot.api.config.KotlinComment
 class IbConfig {
   @KotlinComment(
     "IIROSE的ws地址",
-    "测试环境: wss://m0.iirose.com:8778/",
+    "测试环境: wss://m0.iirose.com:8778/ (已关闭）",
     "真实环境: wss://m1.iirose.com:8778/"
   )
-  var wsUrl: String = "wss://m0.iirose.com:8778/"
+  var wsUrl: String = "wss://m1.iirose.com:8778/"
 
   @KotlinComment(
     "房间ID",

@@ -1,6 +1,0 @@
-# Should print InkerBot's banner when inkerbot start up?
-banner: true
-# Maven Repo
-# In China, you should use "https://maven.aliyun.com/repository/central/".
-mavenRepo: [ 'https://repo1.maven.org/maven2/', 'https://www.jitpack.io/' ]
-database: h2

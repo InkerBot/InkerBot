@@ -64,19 +64,17 @@ class IbConnection {
       request = Request.Builder()
         .url(ibConfig.wsUrl)
         .build()
-      ws = client.newWebSocket(request, wsListener)
-      ws.send(
-        LoginJson.Factory.of(
-          ibConfig.room,
-          ibConfig.username,
-          ibConfig.password
-        ).toString()
-      )
+
+      connect()
 
       timer = timer(period = 5000) {
         ws.send("s")
       }
     }
+  }
+
+  fun close(){
+    ws.close(1000,"InkerBot need to switch account.")
   }
 
   @EventHandler
@@ -91,23 +89,21 @@ class IbConnection {
     ws.send(event.message)
   }
 
+  fun connect(){
+    ws = client.newWebSocket(request, wsListener)
+    ws.send(
+      LoginJson.Factory.of(
+        ibConfig.room,
+        ibConfig.username,
+        ibConfig.password
+      ).toString()
+    )
+  }
+
   @EventHandler(order = Order.POST)
   fun onFailure(event: IbSocketEvent.Failure) {
     runBlocking {
-      timer.cancel()
-
-      ws = client.newWebSocket(request, wsListener)
-      ws.send(
-        LoginJson.Factory.of(
-          ibConfig.room,
-          ibConfig.username,
-          ibConfig.password
-        ).toString()
-      )
-
-      timer = timer(period = 5000) {
-        ws.send("s")
-      }
+      connect()
     }
   }
 
@@ -118,22 +114,22 @@ class IbConnection {
     @Inject
     private lateinit var eventManager: EventManager
     override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-      logger.debug("onClose: code={}, reason={}", code, reason)
+      logger.info("onClose: code={}, reason={}", code, reason)
       eventManager.post(IbSocketEvent.Closed(code, reason))
     }
 
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-      logger.debug("onClosing: code={}, reason={}", code, reason)
+      logger.info("onClosing: code={}, reason={}", code, reason)
       eventManager.post(IbSocketEvent.Closing(code, reason))
     }
 
     override fun onOpen(webSocket: WebSocket, response: Response) {
-      logger.debug("onOpen: ")
+      logger.info("onOpen: ")
       eventManager.post(IbSocketEvent.Open())
     }
 
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-      logger.debug("onFailure:", t)
+      logger.info("onFailure:", t)
       eventManager.post(IbSocketEvent.Failure(t))
     }
 

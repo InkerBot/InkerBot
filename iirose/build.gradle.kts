@@ -21,6 +21,7 @@ kotlin {
 
 tasks.shadowJar {
   archiveBaseName.set("iirose")
+  archiveVersion.set("")
   archiveClassifier.set("app")
 }
 

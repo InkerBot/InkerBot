@@ -4,8 +4,8 @@ plugins {
   `maven-publish`
 }
 
-group = "com.eloli"
-version = "1.0-ALPHA"
+group = "com.eloli.inkerbot"
+version = "1.0-SNAPSHOT-${System.currentTimeMillis()}"
 
 subprojects {
   apply(plugin = "kotlin")
@@ -18,6 +18,17 @@ allprojects {
     maven("https://www.jitpack.io")
   }
   publishing {
+    repositories {
+      if(project.properties.containsKey("mavenUploadEnable")) {
+        maven(project.properties["mavenRepoUrl"]!!) {
+          credentials {
+            username = project.properties["mavenRepoUsername"] as String
+            password = project.properties["mavenRepoPassword"] as String
+          }
+        }
+      }
+      mavenLocal()
+    }
     publications {
       create<MavenPublication>("maven"){
         from(components["java"])
@@ -58,6 +69,7 @@ tasks.jar {
 
 tasks.shadowJar {
   archiveBaseName.set("InkerBot")
+  archiveVersion.set("")
   archiveClassifier.set("app")
 }
 

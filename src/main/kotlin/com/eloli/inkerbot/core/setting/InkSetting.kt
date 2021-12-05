@@ -7,6 +7,9 @@ class InkSetting {
   @Comment("Should print InkerBot's banner when inkerbot start up?")
   var banner = true
 
+  @Comment("Should enable debug output in console?")
+  var debug = false
+
   @KotlinComment(
     "Maven Repo",
     "In China, you should use \"https://maven.aliyun.com/repository/central/\"."

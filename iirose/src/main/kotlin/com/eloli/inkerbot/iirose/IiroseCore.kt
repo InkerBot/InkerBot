@@ -1,8 +1,8 @@
 package com.eloli.inkerbot.iirose
 
 import com.eloli.inkcmd.builder.LiteralArgumentBuilder
-import com.eloli.inkcmd.tree.OptionalNode
-import com.eloli.inkcmd.values.BoolValueType
+import com.eloli.inkcmd.builder.ValuedArgumentBuilder
+import com.eloli.inkcmd.values.StringValueType
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
@@ -17,6 +17,8 @@ import com.eloli.inkerbot.api.registry.Registrar
 import com.eloli.inkerbot.api.registry.UpdatableRegistrar
 import com.eloli.inkerbot.api.service.CommandService
 import com.eloli.inkerbot.api.service.DatabaseService
+import com.eloli.inkerbot.api.service.withSmartHelpCommand
+import com.eloli.inkerbot.api.service.withSmartHelpOption
 import com.eloli.inkerbot.iirose.config.IbConfig
 import com.eloli.inkerbot.iirose.config.IbConfigProvider
 import com.eloli.inkerbot.iirose.event.IbGroupMessageEvent
@@ -28,8 +30,6 @@ import com.eloli.inkerbot.iirose.model.IbMember
 import com.google.inject.Binder
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
-import java.lang.StringBuilder
-import java.util.stream.Collectors
 import javax.inject.Inject
 
 class IiroseCore : JvmPlugin {
@@ -88,60 +88,99 @@ class IiroseCore : JvmPlugin {
   }
 
   @EventHandler
-  fun onRegisterCommand(event: LifecycleEvent.RegisterCommand) {
-    event.register(
-      LiteralArgumentBuilder.literal<MessageEvent>("iirose")
-        .setDescribe("IIROSE BOT MANAGER")
-        .then(
-          LiteralArgumentBuilder.literal<MessageEvent>("username")
-            .withOption(
-              OptionalNode.builder<MessageEvent>()
-                .name("help")
-                .type(BoolValueType.bool())
-                .defaultValue(false)
-                .defineValue(true).build()
-            )
-            .setDescribe("Get IIROSE's username.")
-            .executes {
-              if(it.getOption("help",Boolean::class.java)){
-                val builder = StringBuilder()
-                builder.appendLine("+++ Help text +++")
-                val smartUsage =  commandService.dispatcher.getSmartUsage(it.nodes.last().node,it.source)
-                val prefix = it.nodes.stream()
-                  .map { it.node.usageText }
-                  .collect(Collectors.joining(" "))
-                if(smartUsage.isNotEmpty()){
-                  smartUsage.forEach { k, v ->
-                    builder.append(prefix).append(v).append(" : ").appendLine(k.describe)
-                  }
-                }
-                val optionBuilder = StringBuilder()
-                for(node in it.nodes){
-                  for (option in node.node.options.values) {
-                    optionBuilder.append("--").append(option.name).append(" : ").appendLine(option.describe)
-                  }
-                }
-                it.source.sendMessage(PlainTextComponent.of(builder.toString()))
-                return@executes 1
-              }
-              it.source.sendMessage(
-                PlainTextComponent.of(
-                  InkerBot(IbConfig::class).username
-                )
-              )
-              1
-            }
-            .build()
-        )
-        .build()
-    )
-  }
-
-  @EventHandler
   fun onMessage(event: MessageEvent) {
     val prefix = " [*${InkerBot(IbConfig::class).username}*] ";
     if (event.message.toString().startsWith(prefix)) {
       InkerBot(CommandService::class).execute(event.message.toString().substring(prefix.length), event)
     }
+  }
+
+  @EventHandler
+  fun onRegisterCommand(event: LifecycleEvent.RegisterCommand) {
+    event.register(
+      LiteralArgumentBuilder.literal<MessageEvent>("iirose")
+        .setDescribe("IIROSE provider for InkerBot.")
+        .withSmartHelpOption()
+        .withSmartHelpCommand { 1 }
+        .then(
+          LiteralArgumentBuilder.literal<MessageEvent>("config")
+            .setDescribe("配置iirose")
+            .withSmartHelpCommand { 1 }
+            .then(
+              LiteralArgumentBuilder.literal<MessageEvent>("username")
+                .setDescribe("配置iirose所用的用户名")
+                .withSmartHelpCommand {
+                  it.source.sendMessage(
+                    PlainTextComponent.of("目前配置的用户名为：${InkerBot(IbConfig::class).username}")
+                  )
+                  1
+                }
+                .then(
+                  ValuedArgumentBuilder.argument<MessageEvent?, String?>("newname", StringValueType.string())
+                    .setDescribe("配置iirose所用的用户名")
+                    .withSmartHelpCommand {
+                      InkerBot(IbConfig::class).username = it.getArgument("newname", String::class.java)
+                      InkerBot(IbConfigProvider::class.java).save()
+                      it.source.sendMessage(
+                        PlainTextComponent.of("配置完成，使用 \"/iirose login\" 生效")
+                      )
+                      1
+                    }.build()
+                ).build()
+            )
+            .then(
+              LiteralArgumentBuilder.literal<MessageEvent>("password")
+                .setDescribe("配置iirose所用的密码")
+                .withSmartHelpCommand {
+                  1
+                }
+                .then(
+                  ValuedArgumentBuilder.argument<MessageEvent?, String?>("newpassword", StringValueType.string())
+                    .setDescribe("配置iirose所用的密码")
+                    .withSmartHelpCommand {
+                      InkerBot(IbConfig::class).password = it.getArgument("newpassword", String::class.java)
+                      InkerBot(IbConfigProvider::class.java).save()
+                      it.source.sendMessage(
+                        PlainTextComponent.of("配置完成，使用 \"/iirose login\" 生效")
+                      )
+                      1
+                    }.build()
+                ).build()
+            )
+            .then(
+              LiteralArgumentBuilder.literal<MessageEvent>("room")
+                .setDescribe("配置iirose的房间")
+                .withSmartHelpCommand {
+                  1
+                }
+                .then(
+                  ValuedArgumentBuilder.argument<MessageEvent?, String?>("newroom", StringValueType.string())
+                    .setDescribe("配置iirose的房间")
+                    .withSmartHelpCommand {
+                      InkerBot(IbConfig::class).room = it.getArgument("newroom", String::class.java)
+                      InkerBot(IbConfigProvider::class.java).save()
+                      it.source.sendMessage(
+                        PlainTextComponent.of("配置完成，使用 \"/iirose login\" 生效")
+                      )
+                      1
+                    }.build()
+                ).build()
+            ).build()
+        )
+        .then(
+          LiteralArgumentBuilder.literal<MessageEvent>("login")
+            .setDescribe("重新登录IIROSE")
+            .withSmartHelpCommand {
+              it.source.sendMessage(
+                PlainTextComponent.of("正在重新登录")
+              )
+              InkerBot(IbConnection::class).apply {
+                close()
+                connect()
+              }
+              1
+            }.build()
+        ).build()
+    )
   }
 }

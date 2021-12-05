@@ -44,4 +44,8 @@ class InkerBot private constructor() {
       return this(T::class)
     }
   }
+
+  init {
+    throw IllegalStateException("Static class shouldn't be instance.")
+  }
 }

@@ -18,6 +18,10 @@ class IbConfigProvider @Inject constructor(
     return setting
   }
 
+  fun save() {
+    configService.save(setting)
+  }
+
   init {
     configService = configServiceFactory.of(pluginContainer, "config", IbConfig::class.java)
     setting = configService.load()

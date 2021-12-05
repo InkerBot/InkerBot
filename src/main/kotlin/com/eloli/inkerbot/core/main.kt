@@ -6,9 +6,12 @@ import com.eloli.inkerbot.api.service.CommandService
 import com.eloli.inkerbot.core.command.InkCommandService
 import com.eloli.inkerbot.core.event.InkConsoleMessageEvent
 import com.eloli.inkerbot.core.event.lifestyle.InkLifecycleEvent
+import com.eloli.inkerbot.core.setting.InkSetting
 import com.eloli.inkerbot.core.util.StaticEntryUtil
 import com.google.inject.Guice
-import org.apache.log4j.BasicConfigurator
+import org.apache.log4j.LogManager
+import org.apache.log4j.PropertyConfigurator
+import java.util.*
 
 fun main() {
   val inkerBotModule = InkerBotModule()
@@ -18,7 +21,32 @@ fun main() {
   StaticEntryUtil.applyInjector(InkerBot::class.java.classLoader, injector)
   InkerBot(InkCommandService::class).init()
 
-  BasicConfigurator.configure()
+  val config:InkSetting = InkerBot()
+  val configurator = PropertyConfigurator()
+  val properties = Properties()
+  properties["log4j.rootLogger"]="DEBUG,console,debug,file"
+
+  properties["log4j.appender.console"]="org.apache.log4j.ConsoleAppender"
+  properties["log4j.appender.console.Threshold"]= if (config.debug) { "DEBUG" } else{ "INFO" }
+  properties["log4j.appender.console.layout"]="org.apache.log4j.PatternLayout"
+  properties["log4j.appender.console.layout.ConversionPattern"]="%r [%t] %p %c %x - %m%n"
+
+  properties["log4j.appender.debug"]="org.apache.log4j.RollingFileAppender"
+  properties["log4j.appender.debug.Threshold"]="DEBUG"
+  properties["log4j.appender.debug.File"]="logs/debug.log"
+  properties["log4j.appender.debug.MaxFileSize"]="10MB"
+  properties["log4j.appender.debug.MaxBackupIndex"]="0"
+  properties["log4j.appender.debug.layout"]="org.apache.log4j.PatternLayout"
+  properties["log4j.appender.debug.layout.ConversionPattern"]="%r [%t] %p %c %x - %m%n"
+
+  properties["log4j.appender.file"]="org.apache.log4j.DailyRollingFileAppender"
+  properties["log4j.appender.file.Threshold"]="INFO"
+  properties["log4j.appender.file.File"]="logs/latest.log"
+  properties["log4j.appender.file.DatePattern"]="'.'yyyy-MM-dd"
+  properties["log4j.appender.file.layout"]="org.apache.log4j.PatternLayout"
+  properties["log4j.appender.file.layout.ConversionPattern"]="%r [%t] %p %c %x - %m%n"
+  configurator.doConfigure(properties, LogManager.getLoggerRepository())
+
 
   InkerBot(EventManager::class).registerListeners(
     InkerBot(InkerBotPluginContainer::class),
@@ -43,4 +71,6 @@ fun main() {
 
   // Use normal exit
   InkerBot(CommandService::class).dispatcher.execute("stop", InkConsoleMessageEvent("stop"))
+
+  System.exit(0)
 }

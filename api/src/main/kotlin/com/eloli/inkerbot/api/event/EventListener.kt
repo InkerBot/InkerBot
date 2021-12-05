@@ -4,6 +4,6 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface EventListener<T : Event> {
-    @Throws(Exception::class)
-    fun handle(event: T)
+  @Throws(Exception::class)
+  fun handle(event: T)
 }

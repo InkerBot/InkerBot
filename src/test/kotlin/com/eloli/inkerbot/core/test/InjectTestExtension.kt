@@ -8,18 +8,18 @@ import org.junit.jupiter.api.extension.TestInstanceFactoryContext
 import org.junit.jupiter.api.extension.TestInstantiationException
 
 class InjectTestExtension : TestInstanceFactory {
-    companion object {
-        init {
-            BasicConfigurator.configure()
-            com.eloli.inkerbot.core.main()
-        }
+  companion object {
+    init {
+      BasicConfigurator.configure()
+      com.eloli.inkerbot.core.main()
     }
+  }
 
-    @Throws(TestInstantiationException::class)
-    override fun createTestInstance(
-        factoryContext: TestInstanceFactoryContext,
-        extensionContext: ExtensionContext
-    ): Any {
-        return InkerBot.injector.getInstance(factoryContext.testClass)
-    }
+  @Throws(TestInstantiationException::class)
+  override fun createTestInstance(
+    factoryContext: TestInstanceFactoryContext,
+    extensionContext: ExtensionContext
+  ): Any {
+    return InkerBot.injector.getInstance(factoryContext.testClass)
+  }
 }

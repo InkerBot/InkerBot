@@ -4,5 +4,5 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface Event {
-    val context: EventContext
+  val context: EventContext
 }

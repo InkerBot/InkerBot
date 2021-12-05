@@ -2,36 +2,45 @@ package com.eloli.inkerbot.core
 
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.core.event.lifestyle.InkLifecycleEvent
+import com.eloli.inkerbot.api.service.CommandService
 import com.eloli.inkerbot.core.command.InkCommandService
+import com.eloli.inkerbot.core.event.InkConsoleMessageEvent
+import com.eloli.inkerbot.core.event.lifestyle.InkLifecycleEvent
 import com.eloli.inkerbot.core.util.StaticEntryUtil
 import com.google.inject.Guice
 import org.apache.log4j.BasicConfigurator
 
 fun main() {
-    BasicConfigurator.configure()
-    val inkerBotModule = InkerBotModule()
-    val injector = Guice.createInjector(
-        inkerBotModule
-    )
-    StaticEntryUtil.applyInjector(InkerBot::class.java.classLoader, injector)
+  val inkerBotModule = InkerBotModule()
+  val injector = Guice.createInjector(
+    inkerBotModule
+  )
+  StaticEntryUtil.applyInjector(InkerBot::class.java.classLoader, injector)
+  InkerBot(InkCommandService::class).init()
 
-    InkerBot.injector.getInstance(EventManager::class.java).registerListeners(
-        InkerBot.injector.getInstance(InkerBotPluginContainer::class.java),
-        inkerBotModule
-    )
+  BasicConfigurator.configure()
 
-    InkerBot.injector.getInstance(EventManager::class.java).registerListeners(
-        InkerBot.injector.getInstance(InkerBotPluginContainer::class.java),
-        InkerBot.injector.getInstance(InkCommandService::class.java)
-    )
+  InkerBot(EventManager::class).registerListeners(
+    InkerBot(InkerBotPluginContainer::class),
+    inkerBotModule
+  )
 
-    // Load Plugins
-    InkerBot.injector.getInstance(InkFrame::class.java).init()
+  InkerBot(EventManager::class).registerListeners(
+    InkerBot(InkerBotPluginContainer::class),
+    InkerBot(InkCommandService::class)
+  )
 
-    // Enable
-    InkerBot.injector.getInstance(EventManager::class.java).post(InkLifecycleEvent.Enable())
+  // Load Plugins
+  InkerBot(InkFrame::class).init()
 
-    // Register service
-    InkerBot.injector.getInstance(InkServiceManager::class.java).init()
+  // Enable
+  InkerBot(EventManager::class).post(InkLifecycleEvent.Enable())
+
+  // Register service
+  InkerBot(InkServiceManager::class).init()
+
+  InkerBot(InkCommandService::class).loop()
+
+  // Use normal exit
+  InkerBot(CommandService::class).dispatcher.execute("stop", InkConsoleMessageEvent("stop"))
 }

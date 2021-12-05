@@ -9,10 +9,10 @@ import com.eloli.inkerbot.mirai.util.MiraiMessageUtil
 import net.mamoe.mirai.event.events.GroupMessageEvent
 
 class MiraiGroupMessageEvent(
-    handle: GroupMessageEvent
+  handle: GroupMessageEvent
 ) : MessageEvent {
-    override val sender: Sender = MiraiGroupSender(handle.sender)
-    override val reply: Receiver = MiraiGroupReceiver(handle.group)
-    override val message: MessageComponent = MiraiMessageUtil.toInk(handle.message)
-    override val context: EventContext = EventContext.empty()
+  override val sender: Sender = MiraiGroupSender(handle.sender)
+  override val reply: Receiver = MiraiGroupReceiver(handle.group)
+  override val message: MessageComponent = MiraiMessageUtil.toInk(handle.message)
+  override val context: EventContext = EventContext.empty()
 }

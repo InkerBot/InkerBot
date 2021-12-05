@@ -4,5 +4,5 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface AbstractBuilder<T> {
-    fun build(): T
+  fun build(): T
 }

@@ -4,9 +4,9 @@ import com.eloli.inkerbot.api.event.Event
 import com.eloli.inkerbot.api.event.EventContext
 
 class IbSendRawMessageEvent(val message: String) : Event {
-    override val context: EventContext = EventContext.empty()
-    override fun toString(): String {
-        return "IbSendRawMessageEvent(message='$message', context=$context)"
-    }
+  override val context: EventContext = EventContext.empty()
+  override fun toString(): String {
+    return "IbSendRawMessageEvent(message='$message', context=$context)"
+  }
 
 }

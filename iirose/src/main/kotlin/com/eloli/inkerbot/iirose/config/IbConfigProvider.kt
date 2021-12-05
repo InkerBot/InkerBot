@@ -8,18 +8,18 @@ import javax.inject.Singleton
 
 @Singleton
 class IbConfigProvider @Inject constructor(
-    pluginContainer: PluginContainer,
-    configServiceFactory: ConfigService.Factory
+  pluginContainer: PluginContainer,
+  configServiceFactory: ConfigService.Factory
 ) : Provider<IbConfig> {
-    private val configService: ConfigService<IbConfig>
-    private val setting: IbConfig
+  private val configService: ConfigService<IbConfig>
+  private val setting: IbConfig
 
-    override fun get(): IbConfig {
-        return setting
-    }
+  override fun get(): IbConfig {
+    return setting
+  }
 
-    init {
-        configService = configServiceFactory.of(pluginContainer, "config", IbConfig::class.java)
-        setting = configService.load()
-    }
+  init {
+    configService = configServiceFactory.of(pluginContainer, "config", IbConfig::class.java)
+    setting = configService.load()
+  }
 }

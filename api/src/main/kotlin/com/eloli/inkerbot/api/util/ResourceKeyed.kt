@@ -4,5 +4,5 @@ import com.eloli.inkerbot.api.ILoveInkerBotForever
 
 @ILoveInkerBotForever
 interface ResourceKeyed {
-    val key: ResourceKey
+  val key: ResourceKey
 }

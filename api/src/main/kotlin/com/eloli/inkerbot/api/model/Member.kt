@@ -5,5 +5,5 @@ import com.eloli.inkerbot.api.util.Identifiable
 import com.eloli.inkerbot.api.util.Named
 
 interface Member : Identifiable, Named {
-    fun sendMessage(message: MessageComponent)
+  fun sendMessage(message: MessageComponent)
 }

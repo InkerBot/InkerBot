@@ -17,41 +17,45 @@ import net.mamoe.mirai.event.Event
 import net.mamoe.mirai.utils.LoggerAdapters.asMiraiLogger
 import org.slf4j.Logger
 
-class MiraiCore:JvmPlugin {
-    override fun configure(binder: Binder) {
-        binder.bind(MiraiConfig::class.java).toProvider(MiraiConfigProvider::class.java)
+class MiraiCore : JvmPlugin {
+  override fun configure(binder: Binder) {
+    binder.bind(MiraiConfig::class.java).toProvider(MiraiConfigProvider::class.java)
+  }
+
+  @Inject
+  private lateinit var config: MiraiConfig
+
+  @Inject
+  private lateinit var eventManager: EventManager
+
+  @Inject
+  private lateinit var plugin: PluginContainer
+
+  @Inject
+  private lateinit var logger: Logger
+
+  @EventHandler
+  fun onEnable(e: LifecycleEvent.Enable) {
+    runBlocking {
+      var bot = BotFactory.newBot(config.qqNumber.toLong(), config.qqPassword) {
+        fileBasedDeviceInfo(plugin.dataPath.resolve("device.json").toString())
+        cacheDir = plugin.dataPath.toFile()
+        botLoggerSupplier = { logger.asMiraiLogger() }
+        networkLoggerSupplier = { logger.asMiraiLogger() }
+      }.alsoLogin()
+      MiraiHandler.register(bot)
+      bot.eventChannel.subscribeAlways<Event> {
+        logger.debug("onEvent: {}", this)
+        eventManager.post(MiraiBoxEvent(this))
+      }
     }
 
-    @Inject
-    private lateinit var config: MiraiConfig
-    @Inject
-    private lateinit var eventManager: EventManager
-    @Inject
-    private lateinit var plugin: PluginContainer
-    @Inject
-    private lateinit var logger: Logger
-
-    @EventHandler
-    fun onEnable(e:LifecycleEvent.Enable){
-        runBlocking {
-            var bot = BotFactory.newBot(config.qqNumber.toLong(), config.qqPassword){
-                fileBasedDeviceInfo(plugin.dataPath.resolve("device.json").toString())
-                cacheDir = plugin.dataPath.toFile()
-                botLoggerSupplier = { logger.asMiraiLogger() }
-                networkLoggerSupplier  = { logger.asMiraiLogger() }
-            }.alsoLogin()
-            MiraiHandler.register(bot)
-            bot.eventChannel.subscribeAlways<Event> {
-                logger.debug("onEvent: {}", this)
-                eventManager.post(MiraiBoxEvent(this))
-            }
-        }
-
-        InkerBot.eventManager.registerListener(plugin, MessageEvent::class.java){
-            if(it.message is PlainTextComponent
-                && (it.message as PlainTextComponent).context.startsWith("/inkerbot:表白")){
-                it.sendMessage(PlainTextComponent.of("谢谢！"))
-            }
-        }
+    InkerBot.eventManager.registerListener(plugin, MessageEvent::class.java) {
+      if (it.message is PlainTextComponent
+        && (it.message as PlainTextComponent).context.startsWith("/inkerbot:表白")
+      ) {
+        it.sendMessage(PlainTextComponent.of("谢谢！"))
+      }
     }
+  }
 }

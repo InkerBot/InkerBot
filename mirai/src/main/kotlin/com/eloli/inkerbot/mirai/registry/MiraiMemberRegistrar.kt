@@ -14,23 +14,24 @@ import javax.inject.Singleton
 
 @Singleton
 class MiraiMemberRegistrar : Registrar<Member> {
-    @Inject
-    private lateinit var database: Database
-    override fun get(identity: Identity): Optional<Member> {
-        val qqNumber = Optional.ofNullable(database.from(MiraiMember)
-            .select(MiraiMember.qqNumber)
-            .where { MiraiMember.id eq identity.uuid }
-            .limit(1)
-            .map { it[MiraiMember.qqNumber] }
-            .firstOrNull())
-        if (qqNumber.isEmpty) {
-            return Optional.empty()
-        } else {
-            TODO()
-        }
+  @Inject
+  private lateinit var database: Database
+  override fun get(identity: Identity): Optional<Member> {
+    val qqNumber = Optional.ofNullable(database.from(MiraiMember)
+      .select(MiraiMember.qqNumber)
+      .where { MiraiMember.id eq identity.uuid }
+      .limit(1)
+      .map { it[MiraiMember.qqNumber] }
+      .firstOrNull())
+    if (qqNumber.isEmpty) {
+      return Optional.empty()
+    } else {
+      TODO()
     }
-    object MiraiMember: Table<Nothing>("mirai_member") {
-        val id = uuid("id").primaryKey()
-        val qqNumber = long("qq_number")
-    }
+  }
+
+  object MiraiMember : Table<Nothing>("mirai_member") {
+    val id = uuid("id").primaryKey()
+    val qqNumber = long("qq_number")
+  }
 }

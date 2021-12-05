@@ -5,14 +5,14 @@ import javax.inject.Singleton
 
 class InkPlainText private constructor(override val context: String) : PlainTextComponent {
 
-    @Singleton
-    class Factory : PlainTextComponent.Factory {
-        override fun of(context: String): PlainTextComponent {
-            return InkPlainText(context)
-        }
+  @Singleton
+  class Factory : PlainTextComponent.Factory {
+    override fun of(context: String): PlainTextComponent {
+      return InkPlainText(context)
     }
+  }
 
-    override fun toString(): String {
-        return context
-    }
+  override fun toString(): String {
+    return context
+  }
 }

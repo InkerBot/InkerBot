@@ -10,17 +10,17 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class InkDatabaseService:DatabaseService {
-    @Inject
-    private lateinit var setting: InkSetting
-    private var database: DatabaseService? = null
-    override val session: Session
-        get(){
-        if(database == null){
-            database = InkerBot.serviceManager.getInstance(
-                Key.get(DatabaseService::class.java).withAnnotation(Names.named(setting.database))
-            )
-        }
-        return database!!.session
+class InkDatabaseService : DatabaseService {
+  @Inject
+  private lateinit var setting: InkSetting
+  private var database: DatabaseService? = null
+  override val session: Session
+    get() {
+      if (database == null) {
+        database = InkerBot.serviceManager.getInstance(
+          Key.get(DatabaseService::class.java).withAnnotation(Names.named(setting.database))
+        )
+      }
+      return database!!.session
     }
 }

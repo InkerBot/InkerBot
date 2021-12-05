@@ -12,15 +12,17 @@ import javax.inject.Singleton
 
 @Singleton
 class InkServiceManager : ProxyInjector(), ServiceManager {
-    @Inject
-    private lateinit var eventManager: EventManager
-    fun init() {
-        registerProxyInjector(
-            InkerBot.injector.createChildInjector(object : Module {
-                override fun configure(binder: Binder) {
-                    eventManager.post(InkLifecycleEvent.RegisterService(binder))
-                }
-            })
-        )
-    }
+  override var inited: Boolean = false
+
+  @Inject
+  private lateinit var eventManager: EventManager
+  fun init() {
+    registerProxyInjector(
+      InkerBot.injector.createChildInjector(object : Module {
+        override fun configure(binder: Binder) {
+          eventManager.post(InkLifecycleEvent.RegisterService(binder))
+        }
+      })
+    )
+  }
 }

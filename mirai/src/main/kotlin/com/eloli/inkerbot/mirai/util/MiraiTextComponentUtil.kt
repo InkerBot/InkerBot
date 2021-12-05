@@ -5,7 +5,7 @@ import net.mamoe.mirai.message.data.Message
 import net.mamoe.mirai.message.data.toPlainText
 
 object MiraiTextComponentUtil {
-    fun toMirai(component: PlainTextComponent): Message {
-        return component.context.toPlainText()
-    }
+  fun toMirai(component: PlainTextComponent): Message {
+    return component.context.toPlainText()
+  }
 }

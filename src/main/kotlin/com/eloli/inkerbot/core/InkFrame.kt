@@ -16,46 +16,46 @@ import javax.inject.Singleton
 
 @Singleton
 class InkFrame : Frame {
-    override val logger: Logger
-        get() = LoggerFactory.getLogger("inkerbot")
-    override val classLoader: ClassLoader
-        get() = InkerBot::class.java.classLoader
+  override val logger: Logger
+    get() = LoggerFactory.getLogger("inkerbot")
+  override val classLoader: ClassLoader
+    get() = InkerBot::class.java.classLoader
 
-    @Inject
-    override lateinit var self: InkerBotPluginContainer
-    override val storagePath: Path = File("./storage").toPath()
-    override val configPath: Path = File("./config").toPath()
+  @Inject
+  override lateinit var self: InkerBotPluginContainer
+  override val storagePath: Path = File("./storage").toPath()
+  override val configPath: Path = File("./config").toPath()
 
-    @Inject
-    private lateinit var setting: InkSetting
+  @Inject
+  private lateinit var setting: InkSetting
 
-    @Inject
-    private lateinit var pluginManager: PluginManager
+  @Inject
+  private lateinit var pluginManager: PluginManager
 
-    @Inject
-    private lateinit var eventManager: EventManager
+  @Inject
+  private lateinit var eventManager: EventManager
 
-    @Inject
-    private lateinit var serviceManager: InkServiceManager
+  @Inject
+  private lateinit var serviceManager: InkServiceManager
 
-    fun init() {
-        if (setting.banner) {
-            BannerPrinter.print(System.out)
-        }
-
-        pluginManager.addPlugin(self)
-
-        val pluginPath = File("./plugins").toPath()
-        Files.createDirectories(pluginPath)
-        Arrays.stream(
-            Objects.requireNonNull<Array<File>>(pluginPath.toFile().listFiles())
-        ).filter { file: File ->
-            file.name.endsWith(".jar")
-        }.forEach { file: File ->
-            pluginManager.addPlugin(file)
-        }
-
-        pluginManager.load()
-        pluginManager.enable()
+  fun init() {
+    if (setting.banner) {
+      BannerPrinter.print(System.out)
     }
+
+    pluginManager.addPlugin(self)
+
+    val pluginPath = File("./plugins").toPath()
+    Files.createDirectories(pluginPath)
+    Arrays.stream(
+      Objects.requireNonNull<Array<File>>(pluginPath.toFile().listFiles())
+    ).filter { file: File ->
+      file.name.endsWith(".jar")
+    }.forEach { file: File ->
+      pluginManager.addPlugin(file)
+    }
+
+    pluginManager.load()
+    pluginManager.enable()
+  }
 }

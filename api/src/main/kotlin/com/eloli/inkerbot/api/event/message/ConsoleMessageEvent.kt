@@ -1,5 +1,5 @@
 package com.eloli.inkerbot.api.event.message
 
-interface PrivateMessageEvent : MessageEvent {
+interface ConsoleMessageEvent : MessageEvent {
   //
 }

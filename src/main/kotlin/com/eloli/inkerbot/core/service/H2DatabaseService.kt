@@ -21,41 +21,54 @@ import javax.inject.Singleton
 
 
 @Singleton
-class H2DatabaseService:DatabaseService {
-    @Inject
-    private lateinit var frame: Frame
-    @Inject
-    private lateinit var eventManager:EventManager
-    @Inject
-    private lateinit var pluginManager: PluginManager
-    private var sessionFactory: SessionFactory? = null
-    private val logger:Logger = LoggerFactory.getLogger("database@h2")
-    override val session: Session get() {
-        if(sessionFactory == null){
-            val configuration = Configuration()
-            configuration.setProperty("hibernate.connection.driver_class",
-                Driver::class.java.name)
-            configuration.setProperty("hibernate.connection.url",
-                "jdbc:h2:"+frame.self.dataPath.resolve("storage").toFile())
-            configuration.setProperty("hibernate.connection.autocommit",
-                "true")
-            configuration.setProperty("hibernate.dialect",
-                H2Dialect::class.java.name)
-            configuration.setProperty("hibernate.hbm2ddl.auto", "update")
-            eventManager.post(InkLifecycleEvent.RegisterEntity {
-                configuration.addAnnotatedClass(it)
-            })
-            val serviceRegistry = StandardServiceRegistryBuilder()
-                .applySettings(configuration.properties)
-                .addService(ClassLoaderService::class.java, ClassLoaderServiceImpl(
-                    ArrayList<ClassLoader>().apply {
-                        add(frame.classLoader)
-                        addAll(pluginManager.plugins.map { it.loader })
-                    },TcclLookupPrecedence.AFTER
-                ))
-                .build()
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry)
-        }
-        return sessionFactory!!.openSession()
+class H2DatabaseService : DatabaseService {
+  @Inject
+  private lateinit var frame: Frame
+
+  @Inject
+  private lateinit var eventManager: EventManager
+
+  @Inject
+  private lateinit var pluginManager: PluginManager
+  private var sessionFactory: SessionFactory? = null
+  private val logger: Logger = LoggerFactory.getLogger("database@h2")
+  override val session: Session
+    get() {
+      if (sessionFactory == null) {
+        val configuration = Configuration()
+        configuration.setProperty(
+          "hibernate.connection.driver_class",
+          Driver::class.java.name
+        )
+        configuration.setProperty(
+          "hibernate.connection.url",
+          "jdbc:h2:" + frame.self.dataPath.resolve("storage").toFile()
+        )
+        configuration.setProperty(
+          "hibernate.connection.autocommit",
+          "true"
+        )
+        configuration.setProperty(
+          "hibernate.dialect",
+          H2Dialect::class.java.name
+        )
+        configuration.setProperty("hibernate.hbm2ddl.auto", "update")
+        eventManager.post(InkLifecycleEvent.RegisterEntity {
+          configuration.addAnnotatedClass(it)
+        })
+        val serviceRegistry = StandardServiceRegistryBuilder()
+          .applySettings(configuration.properties)
+          .addService(
+            ClassLoaderService::class.java, ClassLoaderServiceImpl(
+              ArrayList<ClassLoader>().apply {
+                add(frame.classLoader)
+                addAll(pluginManager.plugins.map { it.loader })
+              }, TcclLookupPrecedence.AFTER
+            )
+          )
+          .build()
+        sessionFactory = configuration.buildSessionFactory(serviceRegistry)
+      }
+      return sessionFactory!!.openSession()
     }
 }

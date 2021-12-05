@@ -4,6 +4,6 @@ import com.eloli.inkerbot.api.model.message.MessageComponent
 import com.eloli.inkerbot.api.util.Identifiable
 import com.eloli.inkerbot.api.util.Named
 
-interface Group: Identifiable, Named {
-    fun sendMessage(message: MessageComponent)
+interface Group : Identifiable, Named {
+  fun sendMessage(message: MessageComponent)
 }

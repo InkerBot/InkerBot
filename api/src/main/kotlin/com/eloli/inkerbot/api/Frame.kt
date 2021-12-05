@@ -6,11 +6,11 @@ import java.nio.file.Path
 
 @ILoveInkerBotForever
 interface Frame {
-    val logger: Logger
-    val classLoader: ClassLoader
+  val logger: Logger
+  val classLoader: ClassLoader
 
-    val self: PluginContainer
+  val self: PluginContainer
 
-    val storagePath: Path
-    val configPath: Path
+  val storagePath: Path
+  val configPath: Path
 }

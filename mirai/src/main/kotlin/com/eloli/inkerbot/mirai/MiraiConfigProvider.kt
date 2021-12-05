@@ -8,18 +8,18 @@ import javax.inject.Singleton
 
 @Singleton
 class MiraiConfigProvider @Inject constructor(
-    pluginContainer: PluginContainer,
-    configServiceFactory: ConfigService.Factory
+  pluginContainer: PluginContainer,
+  configServiceFactory: ConfigService.Factory
 ) : Provider<MiraiConfig> {
-    private val configService: ConfigService<MiraiConfig>
-    private val setting: MiraiConfig
+  private val configService: ConfigService<MiraiConfig>
+  private val setting: MiraiConfig
 
-    override fun get(): MiraiConfig {
-        return setting
-    }
+  override fun get(): MiraiConfig {
+    return setting
+  }
 
-    init {
-        configService = configServiceFactory.of(pluginContainer, "config", MiraiConfig::class.java)
-        setting = configService.load()
-    }
+  init {
+    configService = configServiceFactory.of(pluginContainer, "config", MiraiConfig::class.java)
+    setting = configService.load()
+  }
 }

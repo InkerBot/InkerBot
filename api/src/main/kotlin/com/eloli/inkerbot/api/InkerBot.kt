@@ -2,6 +2,7 @@ package com.eloli.inkerbot.api
 
 import com.eloli.inkerbot.api.event.EventManager
 import com.google.inject.Injector
+import java.lang.IllegalStateException
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -42,9 +43,5 @@ class InkerBot private constructor() {
     inline operator fun <reified T : Any> invoke(): T {
       return this(T::class)
     }
-  }
-
-  init {
-    throw IllegalCallerException("Static class shouldn't be instance.")
   }
 }

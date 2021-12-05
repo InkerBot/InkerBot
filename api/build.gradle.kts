@@ -1,5 +1,5 @@
-group = "com.eloli"
-version = "1.0-SNAPSHOT"
+group = rootProject.group
+version = rootProject.version
 
 dependencies {
   api(kotlin("stdlib"))
@@ -12,7 +12,7 @@ dependencies {
   api("org.yaml:snakeyaml:1.29")
   api("com.squareup.okhttp3:okhttp:4.9.1")
   api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
-  api("com.github.InkerBot.InkerCommand:terminal:bf11ecd866")
+  api("com.github.InkerBot.InkerCommand:terminal:9278e67be0")
 
 }
 

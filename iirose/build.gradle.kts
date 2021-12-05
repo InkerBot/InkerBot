@@ -2,8 +2,8 @@ plugins {
   id("com.github.johnrengelman.shadow")
 }
 
-group = "com.eloli"
-version = "1.0-SNAPSHOT"
+group = rootProject.group
+version = rootProject.version
 
 repositories {
   mavenCentral()

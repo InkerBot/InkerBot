@@ -1,12 +1,19 @@
 package com.eloli.inkerbot.core
 
+import com.eloli.inkcmd.builder.LiteralArgumentBuilder
+import com.eloli.inkcmd.builder.OptionBuilder
+import com.eloli.inkcmd.tree.OptionalNode
+import com.eloli.inkcmd.values.BoolValueType
+import com.eloli.inkcmd.values.IntegerValueType
 import com.eloli.inkerbot.api.Frame
+import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.ServiceManager
 import com.eloli.inkerbot.api.config.ConfigService
 import com.eloli.inkerbot.api.event.EventContextKey
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
 import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
+import com.eloli.inkerbot.api.event.message.MessageEvent
 import com.eloli.inkerbot.api.model.ConsoleSender
 import com.eloli.inkerbot.api.model.Member
 import com.eloli.inkerbot.api.model.message.AtComponent
@@ -21,6 +28,8 @@ import com.eloli.inkerbot.api.service.DatabaseService
 import com.eloli.inkerbot.api.util.Identity
 import com.eloli.inkerbot.api.util.ResourceKey
 import com.eloli.inkerbot.core.command.InkCommandService
+import com.eloli.inkerbot.core.command.withSmartHelpCommand
+import com.eloli.inkerbot.core.command.withSmartHelpOption
 import com.eloli.inkerbot.core.config.InkConfigService
 import com.eloli.inkerbot.core.event.InkEventContextKey
 import com.eloli.inkerbot.core.event.InkEventManager
@@ -44,6 +53,8 @@ import com.eloli.inkerbot.core.util.InkResourceKey
 import com.google.inject.Binder
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
+import java.lang.StringBuilder
+import java.util.stream.Collectors
 
 class InkerBotModule : JvmPlugin {
   override fun configure(binder: Binder) {
@@ -83,6 +94,5 @@ class InkerBotModule : JvmPlugin {
 
     e.binder.bind(object : TypeLiteral<Registrar<Member>>() {}).annotatedWith(Names.named("inkerbot:console"))
       .to(InkConsoleMemberRegistry::class.java)
-    // e.binder.bind(object :TypeLiteral<Registrar<String>>() {}).annotatedWith(Names.named("a:b")).to(InkRegistryKey::class.java)
   }
 }

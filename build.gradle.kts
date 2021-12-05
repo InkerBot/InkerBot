@@ -1,19 +1,28 @@
 plugins {
   kotlin("jvm") version "1.5.10"
   id("com.github.johnrengelman.shadow").version("7.0.0")
+  `maven-publish`
 }
 
 group = "com.eloli"
-version = "1.0-SNAPSHOT"
+version = "1.0-ALPHA"
 
 subprojects {
   apply(plugin = "kotlin")
 }
 
 allprojects {
+  apply(plugin = "maven-publish")
   repositories {
     maven("https://maven.aliyun.com/repository/public")
     maven("https://www.jitpack.io")
+  }
+  publishing {
+    publications {
+      create<MavenPublication>("maven"){
+        from(components["java"])
+      }
+    }
   }
 }
 

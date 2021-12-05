@@ -1,12 +1,16 @@
 package com.eloli.inkerbot.core.command
 
+import com.eloli.inkcmd.Command
 import com.eloli.inkcmd.CommandDispatcher
+import com.eloli.inkcmd.builder.ArgumentBuilder
 import com.eloli.inkcmd.builder.LiteralArgumentBuilder
 import com.eloli.inkcmd.builder.ValuedArgumentBuilder
 import com.eloli.inkcmd.context.CommandContext
 import com.eloli.inkcmd.exceptions.CommandSyntaxException
 import com.eloli.inkcmd.terminal.LoliTerminal
 import com.eloli.inkcmd.terminal.ProcessResult
+import com.eloli.inkcmd.tree.OptionalNode
+import com.eloli.inkcmd.values.BoolValueType
 import com.eloli.inkcmd.values.IntegerValueType
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
@@ -20,6 +24,7 @@ import com.eloli.inkerbot.core.event.InkConsoleMessageEvent
 import com.eloli.inkerbot.core.event.lifestyle.InkLifecycleEvent
 import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
+import java.util.stream.Collectors
 import javax.inject.Singleton
 import kotlin.math.ceil
 
@@ -108,4 +113,46 @@ class InkCommandService : CommandService {
     ctx.source.sendMessage(PlainTextComponent.of(builder.toString()));
     return 1
   }
+}
+
+fun <T:ArgumentBuilder<MessageEvent,T>> ArgumentBuilder<MessageEvent,T>.withSmartHelpOption():T{
+  this.withOption(
+    OptionalNode.builder<MessageEvent>()
+      .name("help")
+      .type(BoolValueType.bool())
+      .defaultValue(false)
+      .defineValue(true)
+      .describe("Show help for this command.")
+      .build()
+  )
+  return this as T
+}
+
+fun <T:ArgumentBuilder<MessageEvent,T>> ArgumentBuilder<MessageEvent,T>.withSmartHelpCommand(command: Command<MessageEvent>):T{
+  this.executes {
+    if(it.getOption("help",Boolean::class.java)){
+      val builder = java.lang.StringBuilder()
+      builder.appendLine("+++ Help text +++")
+      builder.appendLine(it.nodes.last().node.describe)
+      val smartUsage =  InkerBot(CommandService::class).dispatcher.getSmartUsage(it.nodes.last().node,it.source)
+      val prefix = it.nodes.stream()
+        .map { it.node.usageText }
+        .collect(Collectors.joining(" "))
+      if(smartUsage.isNotEmpty()){
+        smartUsage.forEach { (k, v) ->
+          builder.append(prefix).append(v).append(" : ").appendLine(k.describe)
+        }
+      }
+      for(node in it.nodes){
+        for (option in node.node.options.values) {
+          builder.append("--").append(option.name).append(" <").append(option.type.toString()).append("> : ").appendLine(option.describe)
+        }
+      }
+
+      it.source.sendMessage(PlainTextComponent.of(builder.toString()))
+      return@executes 1
+    }
+    command.run(it)
+  }
+  return this as T
 }

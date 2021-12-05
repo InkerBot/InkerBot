@@ -1,6 +1,8 @@
 package com.eloli.inkerbot.iirose
 
 import com.eloli.inkcmd.builder.LiteralArgumentBuilder
+import com.eloli.inkcmd.tree.OptionalNode
+import com.eloli.inkcmd.values.BoolValueType
 import com.eloli.inkerbot.api.InkerBot
 import com.eloli.inkerbot.api.event.EventHandler
 import com.eloli.inkerbot.api.event.EventManager
@@ -26,6 +28,8 @@ import com.eloli.inkerbot.iirose.model.IbMember
 import com.google.inject.Binder
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
+import java.lang.StringBuilder
+import java.util.stream.Collectors
 import javax.inject.Inject
 
 class IiroseCore : JvmPlugin {
@@ -90,8 +94,36 @@ class IiroseCore : JvmPlugin {
         .setDescribe("IIROSE BOT MANAGER")
         .then(
           LiteralArgumentBuilder.literal<MessageEvent>("username")
+            .withOption(
+              OptionalNode.builder<MessageEvent>()
+                .name("help")
+                .type(BoolValueType.bool())
+                .defaultValue(false)
+                .defineValue(true).build()
+            )
             .setDescribe("Get IIROSE's username.")
             .executes {
+              if(it.getOption("help",Boolean::class.java)){
+                val builder = StringBuilder()
+                builder.appendLine("+++ Help text +++")
+                val smartUsage =  commandService.dispatcher.getSmartUsage(it.nodes.last().node,it.source)
+                val prefix = it.nodes.stream()
+                  .map { it.node.usageText }
+                  .collect(Collectors.joining(" "))
+                if(smartUsage.isNotEmpty()){
+                  smartUsage.forEach { k, v ->
+                    builder.append(prefix).append(v).append(" : ").appendLine(k.describe)
+                  }
+                }
+                val optionBuilder = StringBuilder()
+                for(node in it.nodes){
+                  for (option in node.node.options.values) {
+                    optionBuilder.append("--").append(option.name).append(" : ").appendLine(option.describe)
+                  }
+                }
+                it.source.sendMessage(PlainTextComponent.of(builder.toString()))
+                return@executes 1
+              }
               it.source.sendMessage(
                 PlainTextComponent.of(
                   InkerBot(IbConfig::class).username

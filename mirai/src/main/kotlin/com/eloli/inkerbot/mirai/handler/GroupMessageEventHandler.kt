@@ -1,8 +1,8 @@
-package com.eloli.inkerbot.mirai.handler
+package bot.inker.mirai.handler
 
-import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.mirai.Handler
-import com.eloli.inkerbot.mirai.event.MiraiGroupMessageEvent
+import bot.inker.api.event.EventManager
+import bot.inker.mirai.Handler
+import bot.inker.mirai.event.MiraiGroupMessageEvent
 import com.google.inject.Inject
 import net.mamoe.mirai.Bot
 import net.mamoe.mirai.event.events.GroupMessageEvent

@@ -12,8 +12,7 @@ dependencies {
   api("org.yaml:snakeyaml:1.29")
   api("com.squareup.okhttp3:okhttp:4.9.1")
   api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
-  api("com.github.InkerBot.InkerCommand:terminal:3435e68b10")
-
+  api("com.github.InkerBot.InkerCommand:terminal:602eb7410c")
 }
 
 kotlin {

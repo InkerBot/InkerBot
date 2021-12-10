@@ -1,8 +1,8 @@
-package com.eloli.inkerbot.mirai.registry
+package bot.inker.mirai.registry
 
-import com.eloli.inkerbot.api.model.Member
-import com.eloli.inkerbot.api.registry.Registrar
-import com.eloli.inkerbot.api.util.Identity
+import bot.inker.api.model.Member
+import bot.inker.api.registry.Registrar
+import bot.inker.api.util.Identity
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.schema.Table

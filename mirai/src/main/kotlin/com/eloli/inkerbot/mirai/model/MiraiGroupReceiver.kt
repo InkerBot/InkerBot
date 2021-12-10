@@ -1,9 +1,9 @@
-package com.eloli.inkerbot.mirai.model
+package bot.inker.mirai.model
 
-import com.eloli.inkerbot.api.model.message.MessageComponent
-import com.eloli.inkerbot.api.util.Identity
-import com.eloli.inkerbot.api.util.ResourceKey
-import com.eloli.inkerbot.mirai.util.MiraiMessageUtil
+import bot.inker.api.model.message.MessageComponent
+import bot.inker.api.util.Identity
+import bot.inker.api.util.ResourceKey
+import bot.inker.mirai.util.MiraiMessageUtil
 import kotlinx.coroutines.runBlocking
 import net.mamoe.mirai.contact.Group
 

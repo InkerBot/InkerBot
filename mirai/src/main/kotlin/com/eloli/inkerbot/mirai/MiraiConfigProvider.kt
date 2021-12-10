@@ -1,7 +1,7 @@
-package com.eloli.inkerbot.mirai
+package bot.inker.mirai
 
-import com.eloli.inkerbot.api.config.ConfigService
-import com.eloli.inkerbot.api.plugin.PluginContainer
+import bot.inker.api.config.ConfigService
+import bot.inker.api.plugin.PluginContainer
 import javax.inject.Inject
 import javax.inject.Provider
 import javax.inject.Singleton

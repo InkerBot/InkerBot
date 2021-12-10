@@ -7,7 +7,7 @@
     "source": "source",
     "issue": "issue"
   },
-  "main": "com.eloli.inkerbot.iirose.IiroseCore",
+  "main": "bot.inker.iirose.IiroseCore",
   "depends": [
   ]
 }

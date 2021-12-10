@@ -1,11 +1,11 @@
-package com.eloli.inkerbot.mirai.event
+package bot.inker.mirai.event
 
-import com.eloli.inkerbot.api.event.EventContext
-import com.eloli.inkerbot.api.event.message.MessageEvent
-import com.eloli.inkerbot.api.model.message.MessageComponent
-import com.eloli.inkerbot.mirai.model.MiraiGroupReceiver
-import com.eloli.inkerbot.mirai.model.MiraiGroupSender
-import com.eloli.inkerbot.mirai.util.MiraiMessageUtil
+import bot.inker.api.event.EventContext
+import bot.inker.api.event.message.MessageEvent
+import bot.inker.api.model.message.MessageComponent
+import bot.inker.mirai.model.MiraiGroupReceiver
+import bot.inker.mirai.model.MiraiGroupSender
+import bot.inker.mirai.util.MiraiMessageUtil
 import net.mamoe.mirai.event.events.GroupMessageEvent
 
 class MiraiGroupMessageEvent(

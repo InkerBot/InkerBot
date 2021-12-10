@@ -4,7 +4,7 @@ plugins {
   `maven-publish`
 }
 
-group = "com.eloli.inkerbot"
+group = "bot.inker"
 version = "1.0-SNAPSHOT-${System.currentTimeMillis()}"
 
 subprojects {
@@ -19,7 +19,7 @@ allprojects {
   }
   publishing {
     repositories {
-      if(project.properties.containsKey("mavenUploadEnable")) {
+      if (project.properties.containsKey("mavenUploadEnable")) {
         maven(project.properties["mavenRepoUrl"]!!) {
           credentials {
             username = project.properties["mavenRepoUsername"] as String
@@ -30,7 +30,7 @@ allprojects {
       mavenLocal()
     }
     publications {
-      create<MavenPublication>("maven"){
+      create<MavenPublication>("maven") {
         from(components["java"])
       }
     }
@@ -63,7 +63,7 @@ tasks.withType<Test> {
 
 tasks.jar {
   manifest {
-    attributes["Main-Class"] = "com.eloli.inkerbot.core.MainKt"
+    attributes["Main-Class"] = "bot.inker.core.MainKt"
   }
 }
 

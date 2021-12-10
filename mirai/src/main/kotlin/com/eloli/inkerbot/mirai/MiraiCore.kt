@@ -1,13 +1,13 @@
-package com.eloli.inkerbot.mirai
+package bot.inker.mirai
 
-import com.eloli.inkerbot.api.InkerBot
-import com.eloli.inkerbot.api.event.EventHandler
-import com.eloli.inkerbot.api.event.EventManager
-import com.eloli.inkerbot.api.event.lifestyle.LifecycleEvent
-import com.eloli.inkerbot.api.event.message.MessageEvent
-import com.eloli.inkerbot.api.model.message.PlainTextComponent
-import com.eloli.inkerbot.api.plugin.JvmPlugin
-import com.eloli.inkerbot.api.plugin.PluginContainer
+import bot.inker.api.InkerBot
+import bot.inker.api.event.EventHandler
+import bot.inker.api.event.EventManager
+import bot.inker.api.event.lifestyle.LifecycleEvent
+import bot.inker.api.event.message.MessageEvent
+import bot.inker.api.model.message.PlainTextComponent
+import bot.inker.api.plugin.JvmPlugin
+import bot.inker.api.plugin.PluginContainer
 import com.google.inject.Binder
 import com.google.inject.Inject
 import kotlinx.coroutines.runBlocking

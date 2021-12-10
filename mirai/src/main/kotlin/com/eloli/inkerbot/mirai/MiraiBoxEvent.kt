@@ -1,7 +1,7 @@
-package com.eloli.inkerbot.mirai
+package bot.inker.mirai
 
-import com.eloli.inkerbot.api.event.EventContext
+import bot.inker.api.event.EventContext
 
-class MiraiBoxEvent(val mirai: net.mamoe.mirai.event.Event) : com.eloli.inkerbot.api.event.Event {
+class MiraiBoxEvent(val mirai: net.mamoe.mirai.event.Event) : bot.inker.api.event.Event {
   override val context: EventContext = EventContext.empty()
 }

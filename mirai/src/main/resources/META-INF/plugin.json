@@ -7,7 +7,7 @@
     "source": "source",
     "issue": "issue"
   },
-  "main": "com.eloli.inkerbot.mirai.MiraiCore",
+  "main": "bot.inker.mirai.MiraiCore",
   "depends": [
   ]
 }

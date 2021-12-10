@@ -1,4 +1,4 @@
-package com.eloli.inkerbot.mirai
+package bot.inker.mirai
 
 import net.mamoe.mirai.Bot
 

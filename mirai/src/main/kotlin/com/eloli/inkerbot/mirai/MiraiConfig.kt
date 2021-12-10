@@ -1,4 +1,4 @@
-package com.eloli.inkerbot.mirai
+package bot.inker.mirai
 
 class MiraiConfig {
   var qqNumber: String = ""

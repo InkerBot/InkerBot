@@ -23,5 +23,9 @@ interface ResourceKey {
     fun of(namespace: String, value: String): ResourceKey {
       return factory().of(namespace, value)
     }
+
+    fun of(key: String): ResourceKey {
+      return factory().resolve(key)
+    }
   }
 }

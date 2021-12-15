@@ -1,13 +1,16 @@
 package bot.inker.core.setting
 
+import bot.inker.api.config.Comment
+import bot.inker.api.config.KotlinComment
+
 class InkSetting {
-  @bot.inker.api.config.Comment("Should print InkerBot's banner when inkerbot start up?")
+  @Comment("Should print InkerBot's banner when inkerbot start up?")
   var banner = true
 
-  @bot.inker.api.config.Comment("Should enable debug output in console?")
+  @Comment("Should enable debug output in console?")
   var debug = false
 
-  @bot.inker.api.config.KotlinComment(
+  @KotlinComment(
     "Maven Repo",
     "In China, you should use \"https://maven.aliyun.com/repository/central/\"."
   )

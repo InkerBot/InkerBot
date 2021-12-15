@@ -1,11 +1,17 @@
 package bot.inker.core.event
 
+import bot.inker.api.InkerBot
 import bot.inker.api.event.*
 import bot.inker.api.event.EventListener
 import bot.inker.api.plugin.PluginContainer
+import org.reflections.Reflections
+import org.reflections.scanners.Scanner
+import org.reflections.scanners.Scanners
+import org.reflections.util.ConfigurationBuilder
 import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.net.URL
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.stream.Collectors
@@ -18,6 +24,17 @@ class InkEventManager : EventManager {
     ConcurrentHashMap()
   private val events: MutableCollection<Class<Event>> = Collections.synchronizedSet(HashSet())
   private val listeners: MutableCollection<InkListenerStruct<Event>> = Collections.synchronizedSet(HashSet())
+
+  override fun scanListeners(plugin: PluginContainer, classLoader: ClassLoader, vararg urls: URL) {
+    for (clazz in Reflections(
+      ConfigurationBuilder()
+        .addClassLoaders(classLoader)
+        .addUrls(urls.asList())
+    ).getTypesAnnotatedWith(AutoComponent::class.java)) {
+      registerListeners(plugin, InkerBot(clazz))
+    }
+  }
+
   override fun registerListeners(plugin: PluginContainer, obj: Any) {
     Arrays.stream(obj.javaClass.methods)
       .filter { method: Method ->

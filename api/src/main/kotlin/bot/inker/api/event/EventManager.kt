@@ -1,8 +1,10 @@
 package bot.inker.api.event
 
 import bot.inker.api.plugin.PluginContainer
+import java.net.URL
 
 interface EventManager {
+  fun scanListeners(plugin: PluginContainer, classLoader: ClassLoader, vararg urls:URL)
   fun registerListeners(plugin: PluginContainer, obj: Any)
   fun <T : Event> registerListener(plugin: PluginContainer, eventClass: Class<T>, listener: EventListener<T>)
   fun <T : Event> registerListener(

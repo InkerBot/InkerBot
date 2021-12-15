@@ -1,8 +1,11 @@
 package bot.inker.core.registry
 
+import bot.inker.api.event.AutoComponent
 import bot.inker.api.plugin.PluginManager
 import bot.inker.api.registry.Registrar
 import bot.inker.api.registry.Registry
+import bot.inker.api.service.DatabaseService
+import bot.inker.api.util.Identity
 import bot.inker.api.util.ResourceKey
 import bot.inker.core.InkerBotPluginContainer
 import bot.inker.core.plugin.JvmPluginContainer
@@ -10,19 +13,48 @@ import com.google.inject.ConfigurationException
 import com.google.inject.Key
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import kotlin.collections.HashMap
 
 @Singleton
+@AutoComponent
 class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
   @Inject
   private lateinit var pluginManager: PluginManager
+  @Inject
+  private lateinit var databaseService: DatabaseService
+
   private val map: MutableMap<ResourceKey, Registrar<T>> = HashMap()
+
   override fun register(key: ResourceKey, registrar: Registrar<T>) {
     if (map.contains(key)) {
       throw IllegalStateException("ResourceKey $key have been register with ${map[key]}.")
     }
     map[key] = registrar
+  }
+
+  override fun generate(key: ResourceKey): Identity {
+    val uuid = UUID.randomUUID()
+    val session = databaseService.session
+    session.beginTransaction()
+    session.save(Record().apply {
+      this.key = key.toString()
+      this.uuid = uuid
+    })
+    session.transaction.commit()
+    return Identity.of(uuid)
+  }
+
+  override fun get(identity: Identity): Optional<T> {
+    val session = databaseService.session
+    session.beginTransaction()
+    val record = session.get(Record::class.java, identity.uuid) ?: return Optional.empty()
+    return get(ResourceKey.of(record.key)).get(identity)
   }
 
   override fun get(key: ResourceKey): Registrar<T> {
@@ -49,6 +81,16 @@ class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
       }
       throw IllegalStateException("Could not found resourceKey $key.")
     }
+  }
+
+  @Entity(name = "registry")
+  class Record : Cloneable {
+    @Id
+    @Column
+    lateinit var uuid: UUID
+
+    @Column
+    lateinit var key: String
   }
 
   @Singleton

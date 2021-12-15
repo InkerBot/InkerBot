@@ -1,11 +1,12 @@
 plugins {
   kotlin("jvm") version "1.5.10"
-  id("com.github.johnrengelman.shadow").version("7.0.0")
   `maven-publish`
+  id("bot.inker.boot.scaner").version("1.1.2")
 }
 
 group = "bot.inker"
-version = "1.0-SNAPSHOT-${System.currentTimeMillis()}"
+version = "1.0-SNAPSHOT"
+// version = "1.0-SNAPSHOT-${System.currentTimeMillis()}"
 
 subprojects {
   apply(plugin = "kotlin")
@@ -14,6 +15,7 @@ subprojects {
 allprojects {
   apply(plugin = "maven-publish")
   repositories {
+    mavenLocal()
     maven("https://maven.aliyun.com/repository/public")
     maven("https://www.jitpack.io")
   }
@@ -61,18 +63,12 @@ tasks.withType<Test> {
   useJUnitPlatform()
 }
 
-tasks.jar {
-  manifest {
-    attributes["Main-Class"] = "bot.inker.core.MainKt"
-  }
+tasks.bootRepo {
+  mainClass.set("bot.inker.core.MainKt")
 }
 
-tasks.shadowJar {
+tasks.jijJar {
   archiveBaseName.set("InkerBot")
   archiveVersion.set("")
   archiveClassifier.set("app")
-}
-
-tasks.assemble {
-  dependsOn(tasks.shadowJar)
 }

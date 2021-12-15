@@ -93,16 +93,4 @@ class InkerBotModule : JvmPlugin {
     e.binder.bind(object : TypeLiteral<Registrar<Member>>() {}).annotatedWith(Names.named("inkerbot:console"))
       .to(InkConsoleMemberRegistry::class.java)
   }
-
-  @EventHandler
-  fun onRegisterCommand(e: LifecycleEvent.RegisterCommand) {
-    e.register(LiteralArgumentBuilder.literal<MessageEvent>("log").describe("Just log it").then(
-      ValuedArgumentBuilder.argument<MessageEvent?, String?>("content",StringValueType.greedyString())
-        .describe("content")
-        .executes {
-          InkerBot(Frame::class).logger.error(it.getArgument("content", String::class.java))
-          1
-        }
-    ).build())
-  }
 }

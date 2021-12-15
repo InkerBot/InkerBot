@@ -13,6 +13,7 @@ dependencies {
   api("com.squareup.okhttp3:okhttp:4.9.1")
   api("org.hibernate.orm:hibernate-core:6.0.0.Alpha7")
   api("com.github.InkerBot.InkerCommand:terminal:602eb7410c")
+  api("org.reflections:reflections:0.10.2")
 }
 
 kotlin {

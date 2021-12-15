@@ -9,10 +9,10 @@ import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.setting.InkSetting
 import bot.inker.core.util.StaticEntryUtil
 import com.google.inject.Guice
-import org.apache.log4j.BasicConfigurator
 import org.apache.log4j.LogManager
 import org.apache.log4j.PropertyConfigurator
 import java.util.*
+
 
 fun main() {
   val inkerBotModule = InkerBotModule()
@@ -50,12 +50,14 @@ fun main() {
   properties["log4j.appender.file.File"] = "logs/latest.log"
   properties["log4j.appender.file.DatePattern"] = "'.'yyyy-MM-dd"
   properties["log4j.appender.file.layout"] = "org.apache.log4j.PatternLayout"
-  properties["log4j.appender.file.layout.ConversionPattern"] = "%r [%t] %p %c %x - %m%n"
+  properties["log4j.appender.file.layout.ConversionPattern"] = "%r %p %c %x - %m%n"
   configurator.doConfigure(properties, LogManager.getLoggerRepository())
 
-  InkerBot(EventManager::class).registerListeners(
+  InkerBot(EventManager::class).scanListeners(
     InkerBot(InkerBotPluginContainer::class),
-    inkerBotModule
+    InkerBot(InkerBotPluginContainer::class).loader,
+    InkerBot::class.java.protectionDomain.codeSource.location,
+    InkerBotModule::class.java.protectionDomain.codeSource.location
   )
 
   InkerBot(EventManager::class).registerListeners(

@@ -23,7 +23,7 @@ class InkerBotPluginContainer : PluginContainer {
     }
     main("bot.inker.core.InkerBotModule")
   }.build()
-  override val loader: ClassLoader = bot.inker.api.InkerBot::class.java.classLoader
+  override val loader: ClassLoader = InkerBot::class.java.classLoader
   override val logger: Logger = LoggerFactory.getLogger("plugin@inkerbot")
   override val dataPath: Path = File("./storage/inkerbot").toPath()
   override val configPath: Path = File("./config/inkerbot").toPath()

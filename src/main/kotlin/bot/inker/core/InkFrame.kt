@@ -18,10 +18,10 @@ class InkFrame : bot.inker.api.Frame {
   override val logger: Logger
     get() = LoggerFactory.getLogger("inkerbot")
   override val classLoader: ClassLoader
-    get() = bot.inker.api.InkerBot::class.java.classLoader
+    get() = InkerBot::class.java.classLoader
 
   @Inject
-  override lateinit var self: bot.inker.core.InkerBotPluginContainer
+  override lateinit var self: InkerBotPluginContainer
   override val storagePath: Path = File("./storage").toPath()
   override val configPath: Path = File("./config").toPath()
 
@@ -35,11 +35,11 @@ class InkFrame : bot.inker.api.Frame {
   private lateinit var eventManager: EventManager
 
   @Inject
-  private lateinit var serviceManager: bot.inker.core.InkServiceManager
+  private lateinit var serviceManager: InkServiceManager
 
   fun init() {
     if (setting.banner) {
-      bot.inker.core.BannerPrinter.print(System.out)
+      BannerPrinter.print(System.out)
     }
 
     pluginManager.addPlugin(self)

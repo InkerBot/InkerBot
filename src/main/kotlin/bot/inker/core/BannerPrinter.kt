@@ -13,7 +13,7 @@ object BannerPrinter {
   )
 
   fun print(out: PrintStream) {
-    for (s in bot.inker.core.BannerPrinter.INKER_BOT_BANNER) {
+    for (s in INKER_BOT_BANNER) {
       out.println(s)
     }
   }

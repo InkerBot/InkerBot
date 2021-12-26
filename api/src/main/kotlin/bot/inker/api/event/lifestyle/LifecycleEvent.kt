@@ -1,5 +1,6 @@
 package bot.inker.api.event.lifestyle
 
+import bot.inker.api.event.Cancellable
 import bot.inker.api.event.Event
 import bot.inker.api.event.message.MessageEvent
 import com.eloli.inkcmd.ktdsl.LiteralArgumentBuilderDsl
@@ -83,7 +84,7 @@ interface LifecycleEvent : Event {
    */
   interface BotStopped : BootEvent
 
-  interface BootEvent : LifecycleEvent {
+  interface BootEvent : LifecycleEvent,Cancellable {
     val lifeCycle:LifeCycle;
   }
 

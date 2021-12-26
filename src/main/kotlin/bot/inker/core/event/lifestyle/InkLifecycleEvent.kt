@@ -54,5 +54,7 @@ abstract class InkLifecycleEvent : LifecycleEvent {
   class BotStopping : LifecycleEvent.BotStopping,BootEvent(LifeCycle.BOT_STOPPING)
   class BotStopped : LifecycleEvent.BotStopped,BootEvent(LifeCycle.BOT_STOPPED)
 
-  abstract class BootEvent(override val lifeCycle: LifeCycle) : InkLifecycleEvent(),LifecycleEvent.BootEvent
+  abstract class BootEvent(override val lifeCycle: LifeCycle) : InkLifecycleEvent(),LifecycleEvent.BootEvent{
+    override var cancelled: Boolean = false
+  }
 }

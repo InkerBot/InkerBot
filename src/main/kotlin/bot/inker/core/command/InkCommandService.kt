@@ -17,6 +17,7 @@ import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.util.post
 import com.eloli.inkcmd.Command
 import com.eloli.inkcmd.CommandDispatcher
+import com.eloli.inkcmd.ParseResults
 import com.eloli.inkcmd.builder.ArgumentBuilder
 import com.eloli.inkcmd.builder.LiteralArgumentBuilder
 import com.eloli.inkcmd.builder.ValuedArgumentBuilder
@@ -40,7 +41,7 @@ class InkCommandService : CommandService {
   lateinit var terminal: LoliTerminal<MessageEvent>
 
   fun init() {
-    dispatcher = ThreadCommandDispatcher()
+    dispatcher = InkerBot(ThreadCommandDispatcher::class)
     dispatcher.root.helpHandler = InkerBot(HelpCommand::class)
     terminal = LoliTerminal(
       dispatcher,

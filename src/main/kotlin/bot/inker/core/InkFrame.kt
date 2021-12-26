@@ -2,10 +2,7 @@ package bot.inker.core
 
 import bot.inker.api.Frame
 import bot.inker.api.InkerBot
-import bot.inker.api.event.AutoComponent
-import bot.inker.api.event.EventHandler
-import bot.inker.api.event.EventManager
-import bot.inker.api.event.Order
+import bot.inker.api.event.*
 import bot.inker.api.event.lifestyle.LifecycleEvent
 import bot.inker.api.event.message.MessageEvent
 import bot.inker.api.model.Member
@@ -33,6 +30,7 @@ import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingDeque
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 @Singleton
 @AutoComponent
@@ -105,14 +103,22 @@ class InkFrame : Frame {
         InkerBot::class.java.protectionDomain.codeSource.location,
         InkFrame::class.java.protectionDomain.codeSource.location
       )
-      InkerBot(InkLifecycleEvent.Construction::class).post()
-      InkerBot(InkLifecycleEvent.PreInitialization::class).post()
-      InkerBot(InkLifecycleEvent.Initialization::class).post()
-      InkerBot(InkLifecycleEvent.PostInitialization::class).post()
-      InkerBot(InkLifecycleEvent.LoadComplete::class).post()
-      InkerBot(InkLifecycleEvent.ServerAboutToStart::class).post()
-      InkerBot(InkLifecycleEvent.ServerStarting::class).post()
-      InkerBot(InkLifecycleEvent.ServerStarted::class).post()
+      val classes:Array<KClass<*>> = arrayOf(
+        InkLifecycleEvent.Construction::class,
+        InkLifecycleEvent.PreInitialization::class,
+        InkLifecycleEvent.Initialization::class,
+        InkLifecycleEvent.PostInitialization::class,
+        InkLifecycleEvent.LoadComplete::class,
+        InkLifecycleEvent.ServerAboutToStart::class,
+        InkLifecycleEvent.ServerStarting::class,
+        InkLifecycleEvent.ServerStarted::class,
+      )
+      for (clazz in classes) {
+        if ((InkerBot(clazz) as InkLifecycleEvent.BootEvent).post().cancelled){
+          close()
+          return@execute
+        }
+      }
     }
   }
 

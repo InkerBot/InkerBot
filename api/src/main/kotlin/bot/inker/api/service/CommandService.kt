@@ -3,6 +3,7 @@ package bot.inker.api.service
 import bot.inker.api.event.message.MessageEvent
 import com.eloli.inkcmd.Command
 import com.eloli.inkcmd.CommandDispatcher
+import com.eloli.inkcmd.ParseResults
 import com.eloli.inkcmd.builder.ArgumentBuilder
 
 interface CommandService {

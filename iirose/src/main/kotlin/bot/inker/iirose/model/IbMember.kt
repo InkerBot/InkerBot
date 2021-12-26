@@ -33,13 +33,15 @@ class IbMember(
       }
 
     fun of(userId: String): Optional<Member> {
-      return registrar.get(Identity.Companion.of(userId))
+      return registrar.get(Identity.of(KEY.toString()+userId))
     }
 
     fun update(userId: String, command: (Record) -> Unit): IbMember {
-      return registrar.update(Identity.of(userId)) {
-        it.uuid = Identity.of(userId).uuid
+      val identity = Identity.of(KEY.toString()+userId)
+      return registrar.update(identity) {
+        it.uuid = identity.uuid
         it.userId = userId
+        command(it)
       }
     }
   }

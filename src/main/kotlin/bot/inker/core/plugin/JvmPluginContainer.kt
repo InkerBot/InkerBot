@@ -1,5 +1,6 @@
 package bot.inker.core.plugin
 
+import bot.inker.api.InkerBot
 import bot.inker.api.plugin.JvmPlugin
 import bot.inker.api.plugin.PluginContainer
 import bot.inker.api.plugin.PluginDepend
@@ -17,6 +18,7 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
+import java.nio.file.Files
 import java.nio.file.Path
 
 class JvmPluginContainer(val jarFile: File) : PluginContainer {
@@ -30,11 +32,11 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
     get() = meta.name
   override val dataPath: Path
     get() {
-      return bot.inker.api.InkerBot.frame.storagePath.resolve(name)
+      return Files.createDirectories(InkerBot.frame.storagePath.resolve(name))
     }
   override val configPath: Path
     get() {
-      return bot.inker.api.InkerBot.frame.configPath.resolve(name)
+      return Files.createDirectories(InkerBot.frame.configPath.resolve(name))
     }
 
   override var enabled: Boolean = false
@@ -45,9 +47,9 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
   }
 
   override fun load() {
-    this.loader = JvmPluginClassloader(jarFile.toURI().toURL(), bot.inker.api.InkerBot.frame.classLoader)
+    this.loader = JvmPluginClassloader(jarFile.toURI().toURL(), InkerBot.frame.classLoader)
     loadMeta()
-    val dependencyResolver = bot.inker.api.InkerBot.injector.getInstance(DependencyResolver::class.java)
+    val dependencyResolver = InkerBot.injector.getInstance(DependencyResolver::class.java)
     for (depend in meta.depends) {
       if (depend.type == PluginDepend.Type.LIBRARY) {
         this.loader.addURL(
@@ -71,7 +73,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
     logger = LoggerFactory.getLogger("plugin@$name")
     val mainClass = loader.loadClass(meta.main)
     val jvmPlugin: JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
-    injector = bot.inker.api.InkerBot.injector
+    injector = InkerBot.injector
       .createChildInjector(Module { binder ->
         binder.bind(PluginContainer::class.java).toInstance(this)
         binder.bind(Logger::class.java).toInstance(logger)
@@ -89,12 +91,16 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
       })
     StaticEntryUtil.applyInjector(loader, injector)
     injector.injectMembers(jvmPlugin)
-    bot.inker.api.InkerBot.eventManager.registerListeners(this, jvmPlugin)
+    InkerBot.eventManager.scanListeners(
+      this,
+      loader,
+      jarFile.toURI().toURL()
+    )
   }
 
   override fun disable() {
     enabled = false
-    bot.inker.api.InkerBot.eventManager.unregisterPluginListeners(this)
+    InkerBot.eventManager.unregisterPluginListeners(this)
   }
 
   override fun toString(): String {

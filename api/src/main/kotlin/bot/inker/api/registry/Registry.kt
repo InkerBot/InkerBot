@@ -9,6 +9,7 @@ interface Registry<T> {
   fun register(key: ResourceKey, registrar: Registrar<T>)
 
   fun generate(key: ResourceKey): Identity
+  fun bind(identity: Identity, key: ResourceKey)
   fun get(key: ResourceKey): Registrar<T>
   fun get(identity: Identity): Optional<T>
 

@@ -1,18 +1,54 @@
-package bot.inker.mirai.event
+package com.eloli.inkerbot.mirai.event
 
-import bot.inker.api.event.EventContext
+import bot.inker.api.event.*
+import bot.inker.api.event.message.GroupMessageEvent
 import bot.inker.api.event.message.MessageEvent
+import bot.inker.api.event.message.PrivateMessageEvent
+import bot.inker.api.model.Group
+import bot.inker.api.model.Member
 import bot.inker.api.model.message.MessageComponent
-import bot.inker.mirai.model.MiraiGroupReceiver
-import bot.inker.mirai.model.MiraiGroupSender
-import bot.inker.mirai.util.MiraiMessageUtil
-import net.mamoe.mirai.event.events.GroupMessageEvent
+import bot.inker.api.model.message.PlainTextComponent
+import com.eloli.inkerbot.mirai.model.MiraiGroup
+import com.eloli.inkerbot.mirai.model.MiraiMember
+import com.eloli.inkerbot.mirai.util.message.MiraiTranslator
+import net.mamoe.mirai.contact.User
+import javax.inject.Inject
+import javax.inject.Singleton
 
 class MiraiGroupMessageEvent(
-  handle: GroupMessageEvent
-) : MessageEvent {
-  override val sender: Sender = MiraiGroupSender(handle.sender)
-  override val reply: Receiver = MiraiGroupReceiver(handle.group)
-  override val message: MessageComponent = MiraiMessageUtil.toInk(handle.message)
+  group: net.mamoe.mirai.contact.Group,
+  user: User,
+  override val message: MessageComponent
+): GroupMessageEvent,MiraiMessageEvent {
+  override var cancelled: Boolean = false
+  override val sender: Member = MiraiMember.of(user)
+  override val group: Group = MiraiGroup.of(group)
+
+  override fun sendMessage(message: MessageComponent) {
+    group.sendMessage(message)
+  }
+
+  override fun toString(): String {
+    return "MiraiGroupMessageEvent(message=$message, sender=$sender, group=$group)"
+  }
+
   override val context: EventContext = EventContext.empty()
+
+  @AutoComponent
+  @Singleton
+  class Resolver{
+    @Inject
+    private lateinit var eventManager: EventManager
+
+    @EventHandler(order = Order.POST)
+    fun onMiraiEvent(e:MiraiBoxEvent){
+      if (e.event is net.mamoe.mirai.event.events.GroupMessageEvent) {
+        eventManager.post(MiraiGroupMessageEvent(
+          e.event.group,
+          e.event.sender,
+          MiraiTranslator.toInk(e.event.message)
+        ))
+      }
+    }
+  }
 }

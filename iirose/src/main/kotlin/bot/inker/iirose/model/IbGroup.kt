@@ -1,5 +1,6 @@
 package bot.inker.iirose.model
 
+import bot.inker.api.InkerBot
 import bot.inker.api.model.Group
 import bot.inker.api.model.message.MessageComponent
 import bot.inker.api.registry.Registries
@@ -17,12 +18,12 @@ import javax.persistence.Id
 class IbGroup(
   val record: Record
 ) : Group {
-  override val identity: Identity get() = Identity.Companion.of(record.uuid)
+  override val identity: Identity get() = Identity.of(record.uuid)
   override val key: ResourceKey = KEY
   override val name: String get() = record.name
 
   override fun sendMessage(message: MessageComponent) {
-    bot.inker.api.InkerBot.eventManager.post(IbSendRoomMessage(IbTranslator.toIb(message), "ffffff"))
+   InkerBot.eventManager.post(IbSendRoomMessage(IbTranslator.toIb(message), "ffffff"))
   }
 
   companion object {
@@ -33,12 +34,13 @@ class IbGroup(
       }
 
     operator fun get(roomId: String): Optional<Group> {
-      return registrar.get(Identity.of(roomId))
+      return registrar.get(Identity.of(KEY.toString()+roomId))
     }
 
     fun update(roomId: String, command: (Record) -> Unit): Group {
-      return registrar.update(Identity.of(roomId)) {
-        it.uuid = Identity.of(roomId).uuid
+      val identity = Identity.of(IbMember.KEY.toString()+roomId)
+      return registrar.update(identity) {
+        it.uuid = identity.uuid
         it.roomId = roomId
         command(it)
       }

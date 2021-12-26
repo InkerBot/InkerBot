@@ -1,4 +1,4 @@
-package bot.inker.mirai
+package com.eloli.inkerbot.mirai.config
 
 import bot.inker.api.config.ConfigService
 import bot.inker.api.plugin.PluginContainer
@@ -16,6 +16,9 @@ class MiraiConfigProvider @Inject constructor(
 
   override fun get(): MiraiConfig {
     return setting
+  }
+  fun save(){
+    configService.save(setting)
   }
 
   init {

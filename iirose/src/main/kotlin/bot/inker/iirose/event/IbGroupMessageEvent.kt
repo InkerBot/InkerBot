@@ -1,5 +1,6 @@
 package bot.inker.iirose.event
 
+import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventContext
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
@@ -11,6 +12,7 @@ import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.iirose.config.IbConfig
 import bot.inker.iirose.model.IbGroup
 import bot.inker.iirose.model.IbMember
+import bot.inker.iirose.util.message.IbTranslator
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,7 +25,8 @@ class IbGroupMessageEvent(
   val userTag: String,
   val avatar: String,
   val time: Long
-) : GroupMessageEvent {
+) : GroupMessageEvent,IbMessageEvent {
+  override var cancelled: Boolean = false
   override val context: EventContext = EventContext.empty()
   override val sender: Member = IbMember.update(userId) {
     it.name = userName
@@ -32,7 +35,7 @@ class IbGroupMessageEvent(
   }
   override val group: Group = IbGroup.current()
 
-  override val message: MessageComponent = PlainTextComponent.of(message)
+  override val message: MessageComponent = IbTranslator.toInk(message)
   override fun sendMessage(message: MessageComponent) {
     group.sendMessage(message)
   }
@@ -42,6 +45,7 @@ class IbGroupMessageEvent(
   }
 
   @Singleton
+  @AutoComponent
   class Resolver {
     private val startAt = System.currentTimeMillis() / 1000
 

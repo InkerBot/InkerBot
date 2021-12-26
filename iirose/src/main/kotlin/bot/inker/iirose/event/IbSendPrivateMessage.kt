@@ -9,10 +9,12 @@ class IbSendPrivateMessage(
   val target: String,
   val message: String,
   val color: String = "ffffff"
-) : Event {
+) : Event,Cancellable {
+  override var cancelled: Boolean = false
   override val context: EventContext = EventContext.empty()
 
   @Singleton
+  @AutoComponent
   class Resolver {
     private val gson = Gson()
     private var messageId = 111111111111L

@@ -1,6 +1,8 @@
 package bot.inker.core.registry
 
 import bot.inker.api.event.AutoComponent
+import bot.inker.api.event.EventHandler
+import bot.inker.api.event.lifestyle.LifecycleEvent
 import bot.inker.api.plugin.PluginManager
 import bot.inker.api.registry.Registrar
 import bot.inker.api.registry.Registry
@@ -19,10 +21,7 @@ import javax.inject.Singleton
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.Id
-import kotlin.collections.HashMap
 
-@Singleton
-@AutoComponent
 class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
   @Inject
   private lateinit var pluginManager: PluginManager
@@ -40,21 +39,26 @@ class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
 
   override fun generate(key: ResourceKey): Identity {
     val uuid = UUID.randomUUID()
+    bind(Identity.of(uuid),key)
+    return Identity.of(uuid)
+  }
+
+  override fun bind(identity:Identity, key: ResourceKey): Unit {
+    val uuid = identity.uuid
     val session = databaseService.session
     session.beginTransaction()
     session.save(Record().apply {
-      this.key = key.toString()
+      this.resourceKey = key.toString()
       this.uuid = uuid
     })
     session.transaction.commit()
-    return Identity.of(uuid)
   }
 
   override fun get(identity: Identity): Optional<T> {
     val session = databaseService.session
     session.beginTransaction()
     val record = session.get(Record::class.java, identity.uuid) ?: return Optional.empty()
-    return get(ResourceKey.of(record.key)).get(identity)
+    return get(ResourceKey.of(record.resourceKey)).get(identity)
   }
 
   override fun get(key: ResourceKey): Registrar<T> {
@@ -90,9 +94,10 @@ class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
     lateinit var uuid: UUID
 
     @Column
-    lateinit var key: String
+    lateinit var resourceKey: String
   }
 
+  @AutoComponent
   @Singleton
   class Factory : Registry.Factory {
     private val map: MutableMap<TypeLiteral<Registrar<*>>, Registry<*>> = HashMap()
@@ -102,6 +107,10 @@ class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
           bot.inker.api.InkerBot.injector.injectMembers(this)
         }
       } as Registry<T>
+    }
+    @EventHandler
+    fun registerEntity(e:LifecycleEvent.RegisterEntity){
+      e.register(Record::class.java)
     }
   }
 }

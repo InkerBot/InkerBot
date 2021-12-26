@@ -1,5 +1,6 @@
 package bot.inker.core.service
 
+import bot.inker.api.InkerBot
 import bot.inker.api.event.EventManager
 import bot.inker.api.plugin.PluginManager
 import bot.inker.api.service.DatabaseService
@@ -29,6 +30,11 @@ class H2DatabaseService : DatabaseService {
 
   @Inject
   private lateinit var pluginManager: PluginManager
+
+  @Inject
+  private lateinit var superService:DatabaseService
+  override val entities: Collection<Class<*>>
+    get() = superService.entities
   private var sessionFactory: SessionFactory? = null
   private val logger: Logger = LoggerFactory.getLogger("database@h2")
   override val session: Session
@@ -52,9 +58,9 @@ class H2DatabaseService : DatabaseService {
           H2Dialect::class.java.name
         )
         configuration.setProperty("hibernate.hbm2ddl.auto", "update")
-        eventManager.post(InkLifecycleEvent.RegisterEntity {
+        entities.forEach {
           configuration.addAnnotatedClass(it)
-        })
+        }
         val serviceRegistry = StandardServiceRegistryBuilder()
           .applySettings(configuration.properties)
           .addService(

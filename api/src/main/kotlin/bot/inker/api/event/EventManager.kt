@@ -15,7 +15,7 @@ interface EventManager {
   )
 
   fun <T : Event> registerListener(
-    plugin: PluginContainer, eventClass: Class<T>, order: Order, beforeModifications: Boolean,
+    plugin: PluginContainer, eventClass: Class<T>, order: Order, ignoreCancelled: Boolean,
     listener: EventListener<T>
   )
 
@@ -28,7 +28,7 @@ interface EventManager {
   )
 
   fun <T : Event> registerListener(
-    plugin: PluginContainer, eventClass: Class<T>, order: Order, beforeModifications: Boolean,
+    plugin: PluginContainer, eventClass: Class<T>, order: Order, ignoreCancelled: Boolean,
     listener: (T) -> Unit
   )
 

@@ -7,7 +7,10 @@ import kotlin.reflect.KClass
 
 class InkerBot private constructor() {
   companion object {
+    @JvmStatic
     private var realInjector: Injector? = null
+
+    @get:JvmStatic
     val injector: Injector
       get() {
         Objects.requireNonNull(
@@ -17,16 +20,19 @@ class InkerBot private constructor() {
         return realInjector!!
       }
 
+    @get:JvmStatic
     val frame: Frame
       get() {
         return injector.getInstance(Frame::class.java)
       }
 
+    @get:JvmStatic
     val serviceManager: ServiceManager
       get() {
         return injector.getInstance(ServiceManager::class.java)
       }
 
+    @get:JvmStatic
     val eventManager: EventManager
       get() {
         return injector.getInstance(EventManager::class.java)

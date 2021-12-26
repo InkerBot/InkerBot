@@ -1,5 +1,6 @@
 package bot.inker.iirose.event
 
+import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventContext
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
@@ -9,6 +10,7 @@ import bot.inker.api.model.message.MessageComponent
 import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.iirose.config.IbConfig
 import bot.inker.iirose.model.IbMember
+import bot.inker.iirose.util.message.IbTranslator
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,13 +22,14 @@ class IbPrivateMessageEvent(
   userName: String,
   avatar: String,
   val time: Long,
-) : PrivateMessageEvent {
+) : PrivateMessageEvent,IbMessageEvent {
+  override var cancelled: Boolean = false
   override val context: EventContext = EventContext.empty()
   override val sender: Member = IbMember.update(userId) {
     it.name = userName
     it.avatar = avatar
   }
-  override val message: MessageComponent = PlainTextComponent.of(message)
+  override val message: MessageComponent = IbTranslator.toInk(message)
 
 
   override fun sendMessage(message: MessageComponent) {
@@ -37,8 +40,8 @@ class IbPrivateMessageEvent(
     return "IbPrivateMessageEvent(color='$color', id='$id', time=$time, sender=$sender, message=$message)"
   }
 
-  // "1637396522>5e5f9bd4b3e62>InkerBot>http://r.iirose.com/i/21/9/17/0/1438-GH.jpg>imink>847fc1>>847fc1>1>>226225061655
   @Singleton
+  @AutoComponent
   class Resolver {
     private val startAt = System.currentTimeMillis() / 1000
 

@@ -1,7 +1,7 @@
 package bot.inker.core.event
 
+import bot.inker.api.event.Cancellable
 import bot.inker.api.event.Event
-import bot.inker.api.event.Modifiable
 import bot.inker.api.event.Order
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -14,9 +14,9 @@ class EventPoster<T : Event>(private val event: T, private val listeners: Collec
   fun post(order: Order) {
     for (listener in listeners) {
       if (listener.order === order) {
-        if (event is Modifiable
-          && (event as Modifiable).isModified
-          && listener.beforeModifications
+        if (event is Cancellable
+          && (event as Cancellable).cancelled
+          && listener.ignoreCancelled
         ) {
           continue
         }

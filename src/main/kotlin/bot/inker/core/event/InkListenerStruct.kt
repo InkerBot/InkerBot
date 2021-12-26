@@ -8,7 +8,7 @@ import java.util.*
 
 class InkListenerStruct<T : Event>(
   val plugin: PluginContainer, val eventClass: Class<T>,
-  val order: Order, val beforeModifications: Boolean,
+  val order: Order, val ignoreCancelled: Boolean,
   val listener: EventListener<T>
 ) : Comparable<InkListenerStruct<T>> {
   val listenerEvents: MutableSet<Class<*>> = HashSet()
@@ -23,7 +23,7 @@ class InkListenerStruct<T : Event>(
   }
 
   override fun hashCode(): Int {
-    return Objects.hash(plugin, eventClass, order, beforeModifications, listener, listenerEvents)
+    return Objects.hash(plugin, eventClass, order, ignoreCancelled, listener, listenerEvents)
   }
 
   init {

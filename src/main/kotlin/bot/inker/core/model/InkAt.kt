@@ -11,4 +11,8 @@ class InkAt private constructor(override val target: Member) : AtComponent {
       return InkAt(target)
     }
   }
+
+  override fun toString(): String {
+    return "[${target.identity}]"
+  }
 }

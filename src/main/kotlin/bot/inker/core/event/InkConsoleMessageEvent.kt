@@ -9,6 +9,7 @@ import bot.inker.api.model.message.PlainTextComponent
 class InkConsoleMessageEvent(
   val content: String
 ) : ConsoleMessageEvent {
+  override var cancelled: Boolean = false
   override val message: MessageComponent = PlainTextComponent.of(content)
   override val sender: ConsoleSender = bot.inker.api.InkerBot()
 

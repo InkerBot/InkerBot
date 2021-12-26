@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" shutdownHook="disable">
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="[%d{HH:mm:ss} %level] [%logger]: %msg%n"/>
+        </Console>
+        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.zip">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%t/%level] [%logger/%markerSimpleName]: %msg{strip}%n" charset="UTF-8"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="99" fileIndex="min"/>
+        </RollingRandomAccessFile>
+        <RollingRandomAccessFile name="DebugFile" fileName="logs/debug.log" filePattern="logs/debug-%i.log.zip">
+            <PatternLayout pattern="%r [%t/%level] [%logger/%markerSimpleName]: %msg{strip}%n%xEx" charset="UTF-8"/>
+            <Policies>
+                <OnStartupTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="200MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.reflections.Reflections" level="warn"/>
+        <Root level="all">
+            <AppenderRef ref="Console" level="INFO"/>
+            <AppenderRef ref="File" level="INFO"/>
+            <AppenderRef ref="DebugFile" level="DEBUG"/>
+        </Root>
+    </Loggers>
+</Configuration>

@@ -1,16 +1,20 @@
 package bot.inker.core.command
 
 import bot.inker.api.InkerBot
+import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
 import bot.inker.api.event.Order
 import bot.inker.api.event.lifestyle.LifecycleEvent
+import bot.inker.api.event.message.CommandExecuteEvent
 import bot.inker.api.event.message.MessageEvent
 import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.api.service.CommandService
 import bot.inker.api.service.HelpCommand
+import bot.inker.core.event.InkCommandExecuteEvent
 import bot.inker.core.event.InkConsoleMessageEvent
 import bot.inker.core.event.lifestyle.InkLifecycleEvent
+import bot.inker.core.util.post
 import com.eloli.inkcmd.Command
 import com.eloli.inkcmd.CommandDispatcher
 import com.eloli.inkcmd.builder.ArgumentBuilder
@@ -30,12 +34,13 @@ import javax.inject.Singleton
 import kotlin.math.ceil
 
 @Singleton
+@AutoComponent
 class InkCommandService : CommandService {
   override lateinit var dispatcher: CommandDispatcher<MessageEvent>
   lateinit var terminal: LoliTerminal<MessageEvent>
 
   fun init() {
-    dispatcher = CommandDispatcher<MessageEvent>()
+    dispatcher = ThreadCommandDispatcher()
     dispatcher.root.helpHandler = InkerBot(HelpCommand::class)
     terminal = LoliTerminal(
       dispatcher,
@@ -51,12 +56,18 @@ class InkCommandService : CommandService {
   }
 
   fun loop() {
-    terminal.joinLoop();
+    terminal.joinLoop()
   }
 
   override fun execute(line: String, source: MessageEvent) {
     try {
-      dispatcher.execute(line, source)
+      val event = InkCommandExecuteEvent(
+        source,
+        dispatcher.parse(line, source)
+      ).post()
+      if(!event.cancelled){
+        dispatcher.execute(event.parseResults)
+      }
     } catch (e: CommandSyntaxException) {
       source.sendMessage(
         PlainTextComponent.of(
@@ -66,13 +77,11 @@ class InkCommandService : CommandService {
     }
   }
 
-  @EventHandler
-  fun onInit(event: LifecycleEvent.Enable) {
-    InkerBot(EventManager::class).post(
-      InkLifecycleEvent.RegisterCommand {
-        dispatcher.register(it)
-      }
-    )
+  @EventHandler(order = Order.PRE)
+  fun pre(event: InkLifecycleEvent.Initialization) {
+    event.registerCommand = {
+      dispatcher.register(it)
+    }
   }
 
   @EventHandler(order = Order.POST)
@@ -82,7 +91,7 @@ class InkCommandService : CommandService {
     }
   }
 
-  @EventHandler()
+  @EventHandler
   fun registerHelp(event: LifecycleEvent.RegisterCommand) {
     event.register(
       LiteralArgumentBuilder.literal<MessageEvent>("help")
@@ -161,5 +170,9 @@ class InkCommandService : CommandService {
       command.run(it)
     }
     return argument as T
+  }
+
+  fun print(message: String){
+    terminal.stdout.print(message)
   }
 }

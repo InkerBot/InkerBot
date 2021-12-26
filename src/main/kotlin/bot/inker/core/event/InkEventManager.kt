@@ -1,9 +1,9 @@
 package bot.inker.core.event
 
-import bot.inker.api.InkerBot
 import bot.inker.api.event.*
 import bot.inker.api.event.EventListener
 import bot.inker.api.plugin.PluginContainer
+import bot.inker.core.util.StaticEntryUtil
 import org.reflections.Reflections
 import org.reflections.scanners.Scanner
 import org.reflections.scanners.Scanners
@@ -31,12 +31,16 @@ class InkEventManager : EventManager {
         .addClassLoaders(classLoader)
         .addUrls(urls.asList())
     ).getTypesAnnotatedWith(AutoComponent::class.java)) {
-      registerListeners(plugin, InkerBot(clazz))
+      logger.debug("Scan AutoComponent: $clazz")
+      if (clazz.getAnnotation(Singleton::class.java) == null) {
+        logger.warn("AutoComponent $clazz doesn't have @Singleton.")
+      }
+      registerListeners(plugin, StaticEntryUtil.getInjector(classLoader).getInstance(clazz))
     }
   }
 
   override fun registerListeners(plugin: PluginContainer, obj: Any) {
-    Arrays.stream(obj.javaClass.methods)
+    Arrays.stream(obj::class.java.methods)
       .filter { method: Method ->
         method.returnType == Void.TYPE
             || method.returnType == Object::class.java
@@ -55,7 +59,7 @@ class InkEventManager : EventManager {
         )
         this.registerListener(
           plugin, method.parameters[0].type as Class<Event>,
-          eventAnnotation.order, eventAnnotation.beforeModifications,
+          eventAnnotation.order, eventAnnotation.ignoreCancelled,
           InkEventListener(plugin, obj, method)
         )
       }
@@ -82,10 +86,10 @@ class InkEventManager : EventManager {
     plugin: PluginContainer,
     eventClass: Class<T>,
     order: Order,
-    beforeModifications: Boolean,
+    ignoreCancelled: Boolean,
     listener: EventListener<T>
   ) {
-    val listenerStruct = InkListenerStruct(plugin, eventClass, order, beforeModifications, listener)
+    val listenerStruct = InkListenerStruct(plugin, eventClass, order, ignoreCancelled, listener)
     listeners.add(listenerStruct as InkListenerStruct<Event>)
     events.stream()
       .filter { v: Class<out Event> ->
@@ -114,10 +118,10 @@ class InkEventManager : EventManager {
     plugin: PluginContainer,
     eventClass: Class<T>,
     order: Order,
-    beforeModifications: Boolean,
+    ignoreCancelled: Boolean,
     listener: (T) -> Unit
   ) {
-    registerListener(plugin, eventClass, order, beforeModifications, translate(listener))
+    registerListener(plugin, eventClass, order, ignoreCancelled, translate(listener))
   }
 
   private fun <T : Event> translate(listener: (T) -> Unit): EventListener<T> {
@@ -129,7 +133,7 @@ class InkEventManager : EventManager {
   }
 
   override fun unregisterListeners(obj: Any) {
-    Arrays.stream(obj.javaClass.methods)
+    Arrays.stream(obj::class.java.methods)
       .filter { method: Method -> method.returnType == Void.TYPE }
       .filter { method: Method -> method.canAccess(obj) }
       .filter { method: Method ->
@@ -165,7 +169,7 @@ class InkEventManager : EventManager {
   }
 
   fun registerEvent(clazz: Class<Event>) {
-    if (clazz == null || !EVENT_CLASS.isAssignableFrom(clazz)) {
+    if (!EVENT_CLASS.isAssignableFrom(clazz)) {
       return
     }
     val eventClass = clazz
@@ -200,11 +204,11 @@ class InkEventManager : EventManager {
 
   fun <T : Event> poster(event: T): EventPoster<T> {
     if (!events.contains(event::class.java as Class<Event>)) {
-      registerEvent(event.javaClass)
+      registerEvent(event::class.java as Class<Event>)
     }
     return EventPoster<T>(
       event,
-      linkedHandlers[event.javaClass as Class<Event>]!!
+      linkedHandlers[event::class.java as Class<Event>]!!
         .stream()
         .map { obj: InkListenerStruct<Event> -> InkListenerStruct::class.java.cast(obj) }
         .collect(Collectors.toList()) as Collection<InkListenerStruct<T>>

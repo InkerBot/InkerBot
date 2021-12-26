@@ -8,11 +8,12 @@ import javax.inject.Singleton
 class IbSendRoomMessage(
   val message: String,
   val color: String = "ffffff"
-) : Event {
+) : Event,Cancellable {
   override val context: EventContext = EventContext.empty()
-
+  override var cancelled: Boolean = false
 
   @Singleton
+  @AutoComponent
   class Resolver {
     private val gson = Gson()
     private var messageId = 111111111111L

@@ -1,8 +1,10 @@
 package bot.inker.iirose
 
+import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
 import bot.inker.api.event.Order
+import bot.inker.api.event.lifestyle.LifecycleEvent
 import bot.inker.api.plugin.PluginContainer
 import bot.inker.iirose.config.IbConfig
 import bot.inker.iirose.event.IbRawMessageEvent
@@ -25,6 +27,7 @@ import javax.inject.Singleton
 import kotlin.concurrent.timer
 
 @Singleton
+@AutoComponent
 class IbConnection {
   @Inject
   private lateinit var ibConfig: IbConfig
@@ -47,8 +50,8 @@ class IbConnection {
   private lateinit var ws: WebSocket
   private lateinit var timer: Timer
 
-  fun onBoot() {
-    eventManager.registerListeners(plugin, this)
+  @EventHandler
+  fun onBoot(event: LifecycleEvent.ServerStarted) {
     runBlocking {
       val trustStore = KeyStore.getInstance(
         KeyStore

@@ -78,19 +78,11 @@ class InkerBotModule : JvmPlugin {
     binder.bind(ConfigService.Factory::class.java).to(InkConfigService.Factory::class.java)
     binder.bind(InkSetting::class.java).toProvider(ImplSettingProvider::class.java)
 
-    binder.bind(bot.inker.api.Frame::class.java).to(bot.inker.core.InkFrame::class.java)
+    binder.bind(Frame::class.java).to(InkFrame::class.java)
     binder.bind(ServiceManager::class.java).to(InkServiceManager::class.java)
     binder.bind(DatabaseService::class.java).to(InkDatabaseService::class.java)
     binder.bind(HelpCommand::class.java).to(InkHelpCommand::class.java)
     binder.bind(CommandService::class.java).to(InkCommandService::class.java)
     // binder.bind(Session::class.java).to(InkDatabaseService::class.java)
-  }
-
-  @EventHandler
-  fun onRegisterService(e: LifecycleEvent.RegisterService) {
-    e.binder.bind(DatabaseService::class.java).annotatedWith(Names.named("h2")).to(H2DatabaseService::class.java)
-
-    e.binder.bind(object : TypeLiteral<Registrar<Member>>() {}).annotatedWith(Names.named("inkerbot:console"))
-      .to(InkConsoleMemberRegistry::class.java)
   }
 }

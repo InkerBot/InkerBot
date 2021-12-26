@@ -2,6 +2,7 @@ package bot.inker.core.model
 
 import bot.inker.api.model.message.MessageComponent
 import bot.inker.api.model.message.MuiltComponent
+import bot.inker.api.model.message.PlainTextComponent
 import javax.inject.Singleton
 
 class InkMuilt private constructor(override val subs: List<MessageComponent>) : MuiltComponent {
@@ -25,7 +26,7 @@ class InkMuilt private constructor(override val subs: List<MessageComponent>) : 
     }
 
     override fun plus(component: MessageComponent): MuiltComponent.Builder {
-      return Builder(subs).add(component)
+      return add(component)
     }
 
     override fun plusAssign(component: MessageComponent) {
@@ -33,6 +34,27 @@ class InkMuilt private constructor(override val subs: List<MessageComponent>) : 
     }
 
     override fun add(component: MessageComponent): MuiltComponent.Builder {
+      when(component){
+        is InkPlainText -> {
+          if(component.context.isEmpty()){
+            return this
+          }
+        }
+        is InkMuilt -> {
+          for (sub in component.subs) {
+            add(sub)
+          }
+          return this
+        }
+      }
+      when(val lastComponent = subs.lastOrNull()){
+        is InkPlainText -> {
+          if(component is InkPlainText){
+            lastComponent.context += component.context
+            return this
+          }
+        }
+      }
       subs.add(component)
       return this
     }
@@ -45,7 +67,7 @@ class InkMuilt private constructor(override val subs: List<MessageComponent>) : 
   override fun toString(): String {
     val builder = StringBuilder()
     for (sub in subs) {
-      builder.append(builder.toString())
+      builder.append(sub.toString())
     }
     return builder.toString()
   }

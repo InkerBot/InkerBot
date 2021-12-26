@@ -1,7 +1,7 @@
 plugins {
   kotlin("jvm") version "1.5.10"
   `maven-publish`
-  id("bot.inker.boot.scaner").version("1.1.2")
+  id("bot.inker.boot.scaner").version("1.1.2-SNAPSHOT")
 }
 
 group = "bot.inker"
@@ -18,6 +18,7 @@ allprojects {
     mavenLocal()
     maven("https://maven.aliyun.com/repository/public")
     maven("https://www.jitpack.io")
+    mavenCentral()
   }
   publishing {
     repositories {
@@ -49,12 +50,13 @@ dependencies {
 
 
 
-  implementation("org.apache.logging.log4j:log4j-api:2.14.1")
-  implementation("org.apache.logging.log4j:log4j-core:2.14.1")
-  implementation("org.slf4j:slf4j-log4j12:1.7.32")
-  implementation("com.h2database:h2:1.4.200")
+  implementation("org.apache.logging.log4j:log4j-api:2.17.0")
+  implementation("org.apache.logging.log4j:log4j-core:2.17.0")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.0")
+  implementation("com.h2database:h2:2.0.202")
 
-
+  booterClasspath(kotlin("stdlib")) // Idea issue: If kotlin not in appClassloader, It can't debug this
+  booterClasspath(kotlin("reflect"))
   testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.0-M1")
   testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.0-M1")
 }
@@ -65,6 +67,12 @@ tasks.withType<Test> {
 
 tasks.bootRepo {
   mainClass.set("bot.inker.core.MainKt")
+  mavenUrl.set("http://localhost:8080/")
+  repoUrl.set("http://localhost:8080/repo")
+}
+
+tasks.devRepoServer {
+  port.set(8080)
 }
 
 tasks.jijJar {

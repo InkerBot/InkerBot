@@ -1,12 +1,16 @@
 package bot.inker.core.registry
 
+import bot.inker.api.registry.Registry
 import bot.inker.api.registry.UpdatableRegistrar
 import bot.inker.api.service.DatabaseService
 import bot.inker.api.util.Identity
+import bot.inker.api.util.ResourceKey
 import org.apache.http.client.utils.CloneUtils
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.collections.HashMap
 
 /**
  * T: RegistryClass
@@ -14,13 +18,15 @@ import javax.inject.Singleton
  * V: RecordClass
  */
 open class InkRegistrar<T, U : T, V : Cloneable>(
+  val registry: Registry<T>,
+  val key: ResourceKey,
   val realClass: Class<U>,
   val recordClass: Class<V>
 ) : UpdatableRegistrar<T, U, V> {
 
   @Inject
   private lateinit var databaseService: DatabaseService
-  private val storage = HashMap<Identity, Pair<U, V>>()
+  private val storage = ConcurrentHashMap<Identity, Pair<U, V>>()
 
   override fun get(identity: Identity): Optional<T> {
     return Optional.ofNullable(storage.getOrElse(identity) {
@@ -49,6 +55,7 @@ open class InkRegistrar<T, U : T, V : Cloneable>(
       session.beginTransaction()
       session.save(record)
       session.transaction.commit()
+      registry.bind(identity, key);
       val instance = newInstance(record)
       storage[identity] = Pair(instance, record)
       return instance
@@ -57,7 +64,7 @@ open class InkRegistrar<T, U : T, V : Cloneable>(
       try {
         sourceRecord = CloneUtils.cloneObject(record)
       } catch (e: Exception) {
-
+        //
       }
       record.apply(command)
       if (record != sourceRecord) {
@@ -65,9 +72,11 @@ open class InkRegistrar<T, U : T, V : Cloneable>(
         session.update(record)
         session.transaction.commit()
       }
-      return Optional.ofNullable(storage[identity]).map { it.first }.orElseGet {
-        newInstance(record)
+
+      if (storage[identity] == null) {
+        storage[identity] = Pair(newInstance(record), record)
       }
+      return storage[identity]!!.first
     }
   }
 
@@ -78,11 +87,13 @@ open class InkRegistrar<T, U : T, V : Cloneable>(
   @Singleton
   class Factory : UpdatableRegistrar.Factory {
     override fun <T, U : T, V : Cloneable> of(
+      registry: Registry<T>,
+      key: ResourceKey,
       registrarClass: Class<T>,
       realClass: Class<U>,
       recordClass: Class<V>
     ): UpdatableRegistrar<T, U, V> {
-      return InkRegistrar(realClass, recordClass)
+      return InkRegistrar(registry,key , realClass, recordClass)
     }
   }
 }

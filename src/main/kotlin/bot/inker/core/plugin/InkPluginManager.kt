@@ -32,20 +32,20 @@ class InkPluginManager : PluginManager {
     this.load(false)
   }
 
-  fun load(ignoreNotApsaras: Boolean) {
-    loadPlugins(ignoreNotApsaras)
+  fun load(ignoreNotInkerBot: Boolean) {
+    loadPlugins(ignoreNotInkerBot)
     checkPluginsDepends()
     logger.info("Loaded plugin(s): {}.", plugins)
   }
 
-  fun loadPlugins(ignoreNotApsaras: Boolean) {
+  fun loadPlugins(ignoreNotInkerBot: Boolean) {
     val itr = plugins.iterator()
     while (itr.hasNext()) {
       val plugin = itr.next()
       try {
         plugin.load()
       } catch (e: FileNotFoundException) {
-        if (!ignoreNotApsaras) {
+        if (!ignoreNotInkerBot) {
           logger.warn(FAILED_TO_LOAD, plugin, e)
         }
         itr.remove()

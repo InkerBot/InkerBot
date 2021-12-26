@@ -12,9 +12,8 @@ repositories {
 }
 
 dependencies {
-  implementation(kotlin("stdlib"))
   compileOnly(project(":api"))
-  api("net.mamoe:mirai-core:2.7.0")
+  api("net.mamoe:mirai-core:2.8.3")
 }
 
 tasks.withType<ShadowJar> {

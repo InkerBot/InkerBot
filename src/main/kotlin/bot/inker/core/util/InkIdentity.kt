@@ -12,6 +12,10 @@ class InkIdentity private constructor(override val uuid: UUID) : Identity {
     return uuid.equals(other)
   }
 
+  override fun toString(): String {
+    return uuid.toString()
+  }
+
   class Factory : Identity.Factory {
     override fun of(uuid: UUID): Identity {
       return InkIdentity(uuid)

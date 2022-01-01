@@ -1,23 +1,26 @@
-package bot.inker.core.command
+package bot.inker.core.service
 
 import bot.inker.api.InkerBot
+import bot.inker.api.command.permission
 import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventHandler
-import bot.inker.api.event.EventManager
 import bot.inker.api.event.Order
 import bot.inker.api.event.lifestyle.LifecycleEvent
-import bot.inker.api.event.message.CommandExecuteEvent
 import bot.inker.api.event.message.MessageEvent
+import bot.inker.api.model.Member
 import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.api.service.CommandService
 import bot.inker.api.service.HelpCommand
+import bot.inker.api.service.PermissionService
+import bot.inker.core.InkFrame
+import bot.inker.core.InkConsoleStream
+import bot.inker.core.command.ThreadCommandDispatcher
 import bot.inker.core.event.InkCommandExecuteEvent
 import bot.inker.core.event.InkConsoleMessageEvent
+import bot.inker.core.event.InkPerformEvent
 import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.util.post
 import com.eloli.inkcmd.Command
-import com.eloli.inkcmd.CommandDispatcher
-import com.eloli.inkcmd.ParseResults
 import com.eloli.inkcmd.builder.ArgumentBuilder
 import com.eloli.inkcmd.builder.LiteralArgumentBuilder
 import com.eloli.inkcmd.builder.ValuedArgumentBuilder
@@ -25,23 +28,33 @@ import com.eloli.inkcmd.context.CommandContext
 import com.eloli.inkcmd.exceptions.CommandSyntaxException
 import com.eloli.inkcmd.terminal.LoliTerminal
 import com.eloli.inkcmd.terminal.ProcessResult
+import com.eloli.inkcmd.terminal.buffer.TextStream
 import com.eloli.inkcmd.tree.OptionalNode
 import com.eloli.inkcmd.values.BoolValueType
 import com.eloli.inkcmd.values.IntegerValueType
 import org.jline.utils.AttributedStringBuilder
 import org.jline.utils.AttributedStyle
 import java.util.stream.Collectors
+import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.ceil
 
 @Singleton
 @AutoComponent
 class InkCommandService : CommandService {
-  override lateinit var dispatcher: CommandDispatcher<MessageEvent>
+  @Inject
+  private lateinit var inkConsoleStream: InkConsoleStream
+
+  @Inject
+  override lateinit var dispatcher: ThreadCommandDispatcher
+
+  @Inject
+  lateinit var frame: InkFrame
+
   lateinit var terminal: LoliTerminal<MessageEvent>
+  lateinit var terminalThread: Thread
 
   fun init() {
-    dispatcher = InkerBot(ThreadCommandDispatcher::class)
     dispatcher.root.helpHandler = InkerBot(HelpCommand::class)
     terminal = LoliTerminal(
       dispatcher,
@@ -51,16 +64,21 @@ class InkCommandService : CommandService {
         .append("> ")
         .toAnsi(),
       System.`in`,
-      System.out,
+      inkConsoleStream.proxiedStdout,
       true
     )
+    System.setOut(inkConsoleStream.logout)
+    System.setErr(inkConsoleStream.logerr)
+    inkConsoleStream.output = TextStream {
+      terminal.stdout.print(it)
+    }
   }
 
   fun loop() {
     terminal.joinLoop()
   }
 
-  override fun execute(line: String, source: MessageEvent) {
+  override fun execute(source: MessageEvent, line: String) {
     try {
       val event = InkCommandExecuteEvent(
         source,
@@ -78,37 +96,54 @@ class InkCommandService : CommandService {
     }
   }
 
+  override fun execute(sender: Member, line: String) {
+    execute(InkPerformEvent(sender,line),line)
+  }
+
   @EventHandler(order = Order.PRE)
   fun pre(event: InkLifecycleEvent.Initialization) {
+    init()
     event.registerCommand = {
       dispatcher.register(it)
     }
+  }
+  @EventHandler(order = Order.PRE)
+  fun pre(event: InkLifecycleEvent.PostInitialization) {
+    terminalThread = Thread(
+      {
+        InkerBot(InkCommandService::class).loop()
+        frame.close()
+      },
+      "terminal"
+    )
+    terminalThread.start()
   }
 
   @EventHandler(order = Order.POST)
   fun onMessage(event: MessageEvent) {
     if (event.message.toString().startsWith('/')) {
-      execute(event.message.toString().substring(1), event)
+      execute(event,event.message.toString().substring(1))
     }
   }
 
   @EventHandler
   fun registerHelp(event: LifecycleEvent.RegisterCommand) {
-    event.register(
-      LiteralArgumentBuilder.literal<MessageEvent>("help")
-        .describe("Get list of commands.")
-        .executes(this::getHelp)
-        .then(
-          ValuedArgumentBuilder
-            .argument<MessageEvent, Int>("page", IntegerValueType.integer(1))
-            .executes(this::getHelp)
-            .describe("The page of list")
-        )
-        .build()
-    )
+    event.register("help"){
+      describe = "Get list of commands."
+      permission("inkerbot.command.help")
+      executes {
+        getHelp(it)
+      }
+      argument("page",IntegerValueType.integer(1)){
+        describe = "The page of list"
+        executes{
+          getHelp(it)
+        }
+      }
+    }
   }
 
-  fun getHelp(ctx: CommandContext<MessageEvent>): Int {
+  fun getHelp(ctx: CommandContext<MessageEvent>) {
     val helps = dispatcher.root.children.map { it.name + " : " + it.describe }
     val page = try {
       ctx.getArgument("page", Int::class.java)
@@ -122,8 +157,7 @@ class InkCommandService : CommandService {
     for (i in (page - 1) * 10 until Math.min(page * 10, helps.size)) {
       builder.appendLine(helps[i])
     }
-    ctx.source.sendMessage(PlainTextComponent.of(builder.toString()));
-    return 1
+    ctx.source.sendMessage(PlainTextComponent.of(builder.toString()))
   }
 
   override fun <T : ArgumentBuilder<MessageEvent, T>> withSmartHelpOption(argument: ArgumentBuilder<MessageEvent, T>): T {
@@ -171,9 +205,5 @@ class InkCommandService : CommandService {
       command.run(it)
     }
     return argument as T
-  }
-
-  fun print(message: String){
-    terminal.stdout.print(message)
   }
 }

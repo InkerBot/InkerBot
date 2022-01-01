@@ -1,6 +1,7 @@
 package bot.inker.api.plugin
 
 import org.slf4j.Logger
+import java.net.URL
 import java.nio.file.Path
 
 interface PluginContainer {
@@ -13,6 +14,7 @@ interface PluginContainer {
   val enabled: Boolean
 
   fun addDepend(depend: PluginContainer)
+  fun addDepend(classURL: URL)
 
   @Throws(Exception::class)
   fun load()

@@ -17,7 +17,7 @@ class IbMember(
   val record: Record
 ) : Member {
   val userId: String get() = record.userId
-  override val identity: Identity = Identity.of(userId)
+  override val identity: Identity = Identity.of(record.uuid)
   override val key: ResourceKey = KEY
   override val name: String get() = record.name
 
@@ -64,5 +64,31 @@ class IbMember(
 
     @Column
     var userTag: String? = null
+
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (javaClass != other?.javaClass) return false
+
+      other as Record
+
+      if (uuid != other.uuid) return false
+      if (userId != other.userId) return false
+      if (name != other.name) return false
+      if (avatar != other.avatar) return false
+      if (userTag != other.userTag) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = uuid.hashCode()
+      result = 31 * result + userId.hashCode()
+      result = 31 * result + name.hashCode()
+      result = 31 * result + (avatar?.hashCode() ?: 0)
+      result = 31 * result + (userTag?.hashCode() ?: 0)
+      return result
+    }
+
+
   }
 }

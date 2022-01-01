@@ -1,6 +1,7 @@
 package bot.inker.iirose
 
 import bot.inker.api.InkerBot
+import bot.inker.api.command.permission
 import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
@@ -69,7 +70,7 @@ class IiroseCore : JvmPlugin {
   fun onMessage(event: IbMessageEvent) {
     val prefix = " [*${InkerBot(IbConfig::class).username}*] ";
     if (event.message.toString().startsWith(prefix)) {
-      InkerBot(CommandService::class).execute(event.message.toString().substring(prefix.length), event)
+      InkerBot(CommandService::class).execute(event, event.message.toString().substring(prefix.length))
     }
   }
 
@@ -77,12 +78,14 @@ class IiroseCore : JvmPlugin {
   fun onRegisterCommand(event: LifecycleEvent.RegisterCommand) {
     event.register("iirose"){
       describe = "为 InkerBot IIROSE 插件根命令。"
+      permission("iirose.command")
       option("login-now",BoolValueType.bool()){
         describe("在配置完成后立即应用")
         defaultValue(false)
         defineValue(true)
       }
       literal("config"){
+        permission("iirose.command.config")
         describe = "配置 IIROSE"
         literal("username"){
           describe = "获取 IIROSE 当前的用户名"

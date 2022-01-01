@@ -22,14 +22,6 @@ allprojects {
   }
   publishing {
     repositories {
-      if (project.properties.containsKey("mavenUploadEnable")) {
-        maven(project.properties["mavenRepoUrl"]!!) {
-          credentials {
-            username = project.properties["mavenRepoUsername"] as String
-            password = project.properties["mavenRepoPassword"] as String
-          }
-        }
-      }
       mavenLocal()
     }
     publications {
@@ -48,12 +40,11 @@ dependencies {
   api("org.apache.maven.resolver:maven-resolver-transport-http:1.7.1")
   api("org.apache.maven:maven-resolver-provider:3.8.1")
 
-
-
-  implementation("org.apache.logging.log4j:log4j-api:2.17.0")
-  implementation("org.apache.logging.log4j:log4j-core:2.17.0")
-  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.0")
-  implementation("com.h2database:h2:2.0.202")
+  implementation("org.apache.logging.log4j:log4j-api:2.17.1")
+  implementation("org.apache.logging.log4j:log4j-core:2.17.1")
+  implementation("org.apache.logging.log4j:log4j-slf4j-impl:2.17.1")
+  implementation("org.apache.logging.log4j:log4j-jul:2.17.1")
+  implementation("com.h2database:h2:2.0.204")
 
   booterClasspath(kotlin("stdlib")) // Idea issue: If kotlin not in appClassloader, It can't debug this
   booterClasspath(kotlin("reflect"))

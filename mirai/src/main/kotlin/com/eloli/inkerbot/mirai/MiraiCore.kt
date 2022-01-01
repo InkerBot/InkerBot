@@ -4,6 +4,7 @@ import bot.inker.api.InkerBot
 import bot.inker.api.event.AutoComponent
 import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
+import bot.inker.api.event.Order
 import bot.inker.api.event.lifestyle.LifecycleEvent
 import bot.inker.api.model.Group
 import bot.inker.api.model.Member
@@ -111,7 +112,7 @@ class MiraiCore : JvmPlugin {
     }
   }
 
-  @EventHandler
+  @EventHandler(order = Order.POST)
   fun onMessage(event: MiraiMessageEvent) {
     val message = event.message
     if(message !is MuiltComponent){
@@ -130,6 +131,6 @@ class MiraiCore : JvmPlugin {
     }
     var command = MuiltComponent.of(message.subs.subList(1,message.subs.size)).toString()
     command = command.substring(command.indexOfNonWhitespace())
-    InkerBot(CommandService::class).execute(command, event)
+    InkerBot(CommandService::class).execute(event, command)
   }
 }

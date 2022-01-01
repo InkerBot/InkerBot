@@ -25,12 +25,6 @@ class ThreadCommandDispatcher : CommandDispatcher<MessageEvent>() {
   lateinit var frame: InkFrame
 
   override fun execute(input: String, source: MessageEvent): Int {
-    if(Thread.currentThread().equals(frame.terminalThread)){
-      frame.execute {
-        InkConsoleMessageEvent("/$input").post()
-      }
-      return 1
-    }
     return super.execute(input, source)
   }
 

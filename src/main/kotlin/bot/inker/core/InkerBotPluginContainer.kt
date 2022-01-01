@@ -6,6 +6,8 @@ import bot.inker.api.plugin.PluginMeta
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.net.URL
+import java.net.URLClassLoader
 import java.nio.file.Path
 import javax.inject.Singleton
 
@@ -30,6 +32,10 @@ class InkerBotPluginContainer : PluginContainer {
   override val enabled: Boolean = true
 
   override fun addDepend(depend: PluginContainer) {
+    //
+  }
+
+  override fun addDepend(classURL: URL) {
     //
   }
 

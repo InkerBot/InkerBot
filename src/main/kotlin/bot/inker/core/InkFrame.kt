@@ -2,14 +2,17 @@ package bot.inker.core
 
 import bot.inker.api.Frame
 import bot.inker.api.InkerBot
-import bot.inker.api.event.*
+import bot.inker.api.event.AutoComponent
+import bot.inker.api.event.EventHandler
+import bot.inker.api.event.EventManager
+import bot.inker.api.event.Order
 import bot.inker.api.event.lifestyle.LifecycleEvent
 import bot.inker.api.event.message.MessageEvent
 import bot.inker.api.model.Member
 import bot.inker.api.plugin.PluginManager
 import bot.inker.api.registry.Registrar
+import bot.inker.api.service.CommandService
 import bot.inker.api.service.DatabaseService
-import bot.inker.core.command.InkCommandService
 import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.registry.InkConsoleMemberRegistry
 import bot.inker.core.service.H2DatabaseService
@@ -19,7 +22,6 @@ import com.eloli.inkcmd.builder.LiteralArgumentBuilder
 import com.google.inject.TypeLiteral
 import com.google.inject.name.Names
 import org.jline.reader.UserInterruptException
-import org.jline.utils.ShutdownHooks
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -42,19 +44,23 @@ class InkFrame : Frame {
 
   @Inject
   override lateinit var self: InkerBotPluginContainer
-  @Inject
-  override lateinit var commandService: InkCommandService;
   override val storagePath: Path = File("./storage").toPath()
   override val configPath: Path = File("./config").toPath()
 
-  lateinit var terminalThread:Thread
+  @Inject
+  override lateinit var commandService: CommandService
+
   lateinit var mainThread:Thread
 
   private var normalExit = false
 
-  private val queue: BlockingQueue<() -> Unit> = LinkedBlockingDeque();
+  private val queue: BlockingQueue<Runnable> = LinkedBlockingDeque();
   override fun execute(action: () -> Unit) {
     queue.put(action)
+  }
+
+  override fun execute(command: Runnable) {
+    queue.put(command)
   }
 
   fun start(){
@@ -62,7 +68,7 @@ class InkFrame : Frame {
       {
         while (true){
           try {
-            queue.take().invoke()
+            queue.take().run()
           }catch (e:InterruptedException){
             if(!normalExit){
               throw e
@@ -89,14 +95,6 @@ class InkFrame : Frame {
 
   init {
     execute {
-      terminalThread = Thread(
-        {
-          InkerBot(InkCommandService::class).loop()
-          close()
-        },
-        "terminal"
-      )
-      terminalThread.start()
       eventManager.scanListeners(
         self,
         self.loader,

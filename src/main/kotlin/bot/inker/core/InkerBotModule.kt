@@ -1,21 +1,23 @@
 package bot.inker.core
 
+import bot.inker.api.ConsoleStream
 import bot.inker.api.Frame
-import bot.inker.api.InkerBot
 import bot.inker.api.ServiceManager
+import bot.inker.api.command.GroupValueType
+import bot.inker.api.command.MemberValueType
+import bot.inker.api.command.PermissionPredicate
+import bot.inker.api.command.UUIDValueType
 import bot.inker.api.config.ConfigService
+import bot.inker.api.event.EventContext
+import bot.inker.api.event.EventContextEntry
 import bot.inker.api.event.EventContextKey
-import bot.inker.api.event.EventHandler
 import bot.inker.api.event.EventManager
-import bot.inker.api.event.lifestyle.LifecycleEvent
-import bot.inker.api.event.message.MessageEvent
+import bot.inker.api.event.message.ConsoleMessageEvent
 import bot.inker.api.model.ConsoleSender
-import bot.inker.api.model.Member
 import bot.inker.api.model.message.AtComponent
 import bot.inker.api.model.message.MuiltComponent
 import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.api.plugin.*
-import bot.inker.api.registry.Registrar
 import bot.inker.api.registry.Registry
 import bot.inker.api.registry.UpdatableRegistrar
 import bot.inker.api.service.CommandService
@@ -23,11 +25,9 @@ import bot.inker.api.service.DatabaseService
 import bot.inker.api.service.HelpCommand
 import bot.inker.api.util.Identity
 import bot.inker.api.util.ResourceKey
-import bot.inker.core.command.InkCommandService
-import bot.inker.core.command.InkHelpCommand
+import bot.inker.core.command.*
 import bot.inker.core.config.InkConfigService
-import bot.inker.core.event.InkEventContextKey
-import bot.inker.core.event.InkEventManager
+import bot.inker.core.event.*
 import bot.inker.core.model.InkAt
 import bot.inker.core.model.InkConsoleSender
 import bot.inker.core.model.InkMuilt
@@ -36,33 +36,36 @@ import bot.inker.core.plugin.InkPluginDepend
 import bot.inker.core.plugin.InkPluginManager
 import bot.inker.core.plugin.InkPluginMeta
 import bot.inker.core.plugin.InkPluginUrls
-import bot.inker.core.registry.InkConsoleMemberRegistry
 import bot.inker.core.registry.InkRegistrar
 import bot.inker.core.registry.InkRegistry
-import bot.inker.core.service.H2DatabaseService
+import bot.inker.core.service.InkCommandService
 import bot.inker.core.service.InkDatabaseService
 import bot.inker.core.setting.ImplSettingProvider
 import bot.inker.core.setting.InkSetting
 import bot.inker.core.util.InkIdentity
 import bot.inker.core.util.InkResourceKey
-import com.eloli.inkcmd.builder.LiteralArgumentBuilder
-import com.eloli.inkcmd.builder.ValuedArgumentBuilder
-import com.eloli.inkcmd.values.StringValueType
 import com.google.inject.Binder
-import com.google.inject.TypeLiteral
-import com.google.inject.name.Names
-import org.slf4j.Logger
 
 class InkerBotModule : JvmPlugin {
   override fun configure(binder: Binder) {
-    binder.bind(EventContextKey.Builder::class.java).to(InkEventContextKey.Builder::class.java)
+    binder.bind(EventContext.Factory::class.java).to(InkEventContext.Factory::class.java)
+    binder.bind(EventContextKey.Factory::class.java).to(InkEventContextKey.Factory::class.java)
+    binder.bind(EventContextEntry.Factory::class.java).to(InkEventContextEntry.Factory::class.java)
     binder.bind(EventManager::class.java).to(InkEventManager::class.java)
 
+    binder.bind(ConsoleStream::class.java).to(InkConsoleStream::class.java)
     binder.bind(ConsoleSender::class.java).to(InkConsoleSender::class.java)
+    binder.bind(ConsoleMessageEvent.Factory::class.java).to(InkConsoleMessageEvent.Factory::class.java)
+    binder.bind(PermissionPredicate.Factory::class.java).to(InkPermissionPredicate.Factory::class.java)
+
     binder.bind(AtComponent.Factory::class.java).to(InkAt.Factory::class.java)
     binder.bind(MuiltComponent.Factory::class.java).to(InkMuilt.Factory::class.java)
     binder.bind(PlainTextComponent.Factory::class.java).to(InkPlainText.Factory::class.java)
     binder.bind(MuiltComponent.Builder::class.java).to(InkMuilt.Builder::class.java)
+
+    binder.bind(GroupValueType.Factory::class.java).to(InkGroupValueType.Factory::class.java)
+    binder.bind(MemberValueType.Factory::class.java).to(InkMemberValueType.Factory::class.java)
+    binder.bind(UUIDValueType.Factory::class.java).to(InkUUIDValueType.Factory::class.java)
 
     binder.bind(PluginDepend.Builder::class.java).to(InkPluginDepend.Builder::class.java)
     binder.bind(PluginManager::class.java).to(InkPluginManager::class.java)

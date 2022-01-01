@@ -18,6 +18,7 @@ import java.io.FileNotFoundException
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.lang.reflect.InvocationTargetException
+import java.net.URL
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -46,8 +47,12 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
     loader.addDepend(depend.loader)
   }
 
+  override fun addDepend(classURL: URL) {
+    loader.addURL(classURL)
+  }
+
   override fun load() {
-    this.loader = JvmPluginClassloader(jarFile.toURI().toURL(), InkerBot.frame.classLoader)
+    this.loader = JvmPluginClassloader(this,jarFile.toURI().toURL(), InkerBot.frame.classLoader)
     loadMeta()
     val dependencyResolver = InkerBot.injector.getInstance(DependencyResolver::class.java)
     for (depend in meta.depends) {
@@ -72,7 +77,7 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
     enabled = true
     logger = LoggerFactory.getLogger("plugin@$name")
     val mainClass = loader.loadClass(meta.main)
-    val jvmPlugin: JvmPlugin = (mainClass.getConstructor().newInstance() as JvmPlugin)
+    val jvmPlugin: JvmPlugin = mainClass.getConstructor().newInstance() as JvmPlugin
     injector = InkerBot.injector
       .createChildInjector(Module { binder ->
         binder.bind(PluginContainer::class.java).toInstance(this)

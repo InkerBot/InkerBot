@@ -8,20 +8,12 @@ import com.eloli.inkerbot.mirai.command.config.ConfigGroupCommand
 import com.eloli.inkerbot.mirai.command.config.ConfigPasswordCommand
 import com.eloli.inkerbot.mirai.command.config.ConfigUsernameCommand
 
-object ConfigCommand{
+object LoginCommand{
   operator fun invoke(it: LiteralArgumentBuilderDsl<MessageEvent>) {
     it.apply {
-      literal("config"){
-        permission("mirai.command.config")
-        describe = "配置 Mirai 所用的用户名，密码"
-        option("login-now", BoolValueType.bool()){
-          describe("在配置完成后立即应用")
-          defaultValue(false)
-          defineValue(true)
-        }
-        ConfigUsernameCommand(this)
-        ConfigPasswordCommand(this)
-        ConfigGroupCommand(this)
+      literal("login"){
+        permission("mirai.command.login")
+        describe = "应用 Mirai 所用的用户名，密码"
       }
     }
   }

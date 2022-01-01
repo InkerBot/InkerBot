@@ -1,45 +1,41 @@
 package bot.inker.core.event
 
+import bot.inker.api.event.EventContextEntry
 import bot.inker.api.event.EventContextKey
 import bot.inker.api.util.ResourceKey
-import java.lang.reflect.Type
-import java.util.*
+import java.util.concurrent.atomic.AtomicLong
+import javax.inject.Singleton
 
-class InkEventContextKey<T>(override val key: ResourceKey, private val type: Class<T>) : EventContextKey<T> {
-  override fun allowedType(): Type {
-    return type
-  }
-
-  override fun isInstance(value: Any): Boolean {
-    return type.isInstance(value)
-  }
-
-  override fun cast(value: Any): T {
-    return type.cast(value)
-  }
-
-  class Builder<T> : EventContextKey.Builder<T> {
-    private var key: ResourceKey? = null;
-    private var type: Class<T>? = null;
-
-    override fun build(): EventContextKey<T> {
-      Objects.requireNonNull(key, "key")
-      Objects.requireNonNull(type, "type")
-      return InkEventContextKey(key!!, type!!)
+class InkEventContextKey<T:Any> private constructor(
+    val id:Long,
+    override val key: ResourceKey
+) :EventContextKey<T> {
+    override fun fill(value: T): EventContextEntry<T> {
+        return EventContextEntry.of(this,value)
     }
 
-    override fun key(key: ResourceKey): EventContextKey.Builder<T> {
-      Objects.requireNonNull(key, "key")
-      this.key = key
-      return this
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as InkEventContextKey<*>
+
+        if (id != other.id) return false
+        if (key != other.key) return false
+
+        return true
     }
 
-    override fun <N> type(type: Class<N>): EventContextKey.Builder<N> {
-      Objects.requireNonNull(type, "type")
-      val builder: Builder<N> = Builder()
-      builder.key = key
-      builder.type = type
-      return builder
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
-  }
+
+
+    @Singleton
+    class Factory:EventContextKey.Factory{
+        val atomic = AtomicLong()
+        override fun <T:Any> of(key: ResourceKey): EventContextKey<T> {
+            return InkEventContextKey(atomic.getAndIncrement(),key)
+        }
+    }
 }

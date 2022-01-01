@@ -15,6 +15,7 @@ interface Frame {
   val storagePath: Path
   val configPath: Path
 
+  fun execute(command:Runnable)
   fun execute(action: () -> Unit)
   val commandService: CommandService
 }

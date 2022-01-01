@@ -13,16 +13,18 @@ dependencies {
   compileOnly(project(":api"))
 }
 
-kotlin {
-  experimental {
-    coroutines = org.jetbrains.kotlin.gradle.dsl.Coroutines.ENABLE
-  }
-}
-
 tasks.shadowJar {
   archiveBaseName.set("iirose")
   archiveVersion.set("")
   archiveClassifier.set("app")
+
+  dependencies{
+    exclude("org.jetbrains.kotlin")
+    exclude {
+      (excludes.contains(it.moduleGroup) || excludes.contains(it.moduleGroup+":")
+              || excludes.contains(":"+it.moduleName) || excludes.contains(it.moduleGroup+":"+it.moduleName))
+    }
+  }
 }
 
 tasks.assemble {

@@ -74,5 +74,26 @@ class MiraiMember(
 
     @Column
     lateinit var qqNumber: String
+    override fun equals(other: Any?): Boolean {
+      if (this === other) return true
+      if (javaClass != other?.javaClass) return false
+
+      other as Record
+
+      if (uuid != other.uuid) return false
+      if (name != other.name) return false
+      if (qqNumber != other.qqNumber) return false
+
+      return true
+    }
+
+    override fun hashCode(): Int {
+      var result = uuid.hashCode()
+      result = 31 * result + name.hashCode()
+      result = 31 * result + qqNumber.hashCode()
+      return result
+    }
+
+
   }
 }

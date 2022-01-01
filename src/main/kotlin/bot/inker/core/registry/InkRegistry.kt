@@ -43,7 +43,7 @@ class InkRegistry<T>(val type: TypeLiteral<Registrar<T>>) : Registry<T> {
     return Identity.of(uuid)
   }
 
-  override fun bind(identity:Identity, key: ResourceKey): Unit {
+  override fun bind(identity:Identity, key: ResourceKey) {
     val uuid = identity.uuid
     val session = databaseService.session
     session.beginTransaction()

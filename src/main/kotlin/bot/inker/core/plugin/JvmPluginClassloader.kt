@@ -1,11 +1,15 @@
 package bot.inker.core.plugin
 
+import bot.inker.api.plugin.PluginContainer
 import bot.inker.core.util.StaticEntryUtil
 import java.net.URL
 import java.net.URLClassLoader
 
-class JvmPluginClassloader(url: URL, parent: ClassLoader) : URLClassLoader(arrayOf(url), parent) {
-
+class JvmPluginClassloader(
+  val plugin:PluginContainer,
+  url: URL,
+  parent: ClassLoader
+) : URLClassLoader(arrayOf(url), parent) {
   private val depends: MutableCollection<ClassLoader> = java.util.ArrayList()
 
   override fun loadClass(name: String, resolve: Boolean): Class<*> {
@@ -16,20 +20,27 @@ class JvmPluginClassloader(url: URL, parent: ClassLoader) : URLClassLoader(array
       }
       if (c == null) {
         try {
-          c = parent.loadClass(name)
-        } catch (ignore: ClassNotFoundException) {
-          //
-        }
-      }
-      if (c == null) {
-        try {
           c = findClass(name)
+          try {
+            val pclass = parent.loadClass(name)
+            val pFile = pclass.protectionDomain.codeSource.location.path.substringAfterLast('/',"")
+            plugin.logger.warn("Class $name defined both in $plugin and frame($pFile). It may cause serious problems.")
+          } catch (e: ClassNotFoundException) {
+            //
+          }
         } catch (ignore: ClassNotFoundException) {
           //
         }
       }
       if (c == null) {
         c = tryDepends(name)
+      }
+      if (c == null) {
+        try {
+          c = parent.loadClass(name)
+        } catch (ignore: ClassNotFoundException) {
+          //
+        }
       }
       if (c == null) {
         throw ClassNotFoundException(name)

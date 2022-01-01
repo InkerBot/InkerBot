@@ -14,14 +14,12 @@ object IbTranslator {
   fun toIb(message: MessageComponent,builder: StringBuilder): StringBuilder {
     when (message) {
       is MuiltComponent -> {
-        val result = StringBuilder()
         for (sub in message.subs) {
-          result.append(toIb(sub))
+          builder.append(toIb(sub))
         }
-        result.toString()
       }
       is PlainTextComponent -> {
-        message.context
+        builder.append(message.context)
       }
       is AtComponent -> {
         val target = message.target

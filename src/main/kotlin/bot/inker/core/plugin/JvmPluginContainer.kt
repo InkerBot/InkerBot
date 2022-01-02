@@ -76,10 +76,11 @@ class JvmPluginContainer(val jarFile: File) : PluginContainer {
   override fun enable() {
     enabled = true
     logger = LoggerFactory.getLogger("plugin@$name")
-    val mainClass = loader.loadClass(meta.main)
+    val mainClass = loader.loadClass(meta.main) as Class<JvmPlugin>
     val jvmPlugin: JvmPlugin = mainClass.getConstructor().newInstance() as JvmPlugin
     injector = InkerBot.injector
       .createChildInjector(Module { binder ->
+        binder.bind(mainClass).toInstance(jvmPlugin)
         binder.bind(PluginContainer::class.java).toInstance(this)
         binder.bind(Logger::class.java).toInstance(logger)
         try {

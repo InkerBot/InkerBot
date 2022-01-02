@@ -2,12 +2,10 @@ package com.eloli.inkerbot.mirai.event
 
 import bot.inker.api.event.*
 import bot.inker.api.event.message.GroupMessageEvent
-import bot.inker.api.event.message.MessageEvent
-import bot.inker.api.event.message.PrivateMessageEvent
 import bot.inker.api.model.Group
 import bot.inker.api.model.Member
 import bot.inker.api.model.message.MessageComponent
-import bot.inker.api.model.message.PlainTextComponent
+import com.eloli.inkerbot.mirai.config.MiraiConfig
 import com.eloli.inkerbot.mirai.model.MiraiGroup
 import com.eloli.inkerbot.mirai.model.MiraiMember
 import com.eloli.inkerbot.mirai.util.message.MiraiTranslator
@@ -39,10 +37,15 @@ class MiraiGroupMessageEvent(
   class Resolver{
     @Inject
     private lateinit var eventManager: EventManager
+    @Inject
+    private lateinit var config:MiraiConfig
 
     @EventHandler(order = Order.POST)
     fun onMiraiEvent(e:MiraiBoxEvent){
       if (e.event is net.mamoe.mirai.event.events.GroupMessageEvent) {
+        if(config.disabledGroups.contains(e.event.group.id.toString())){
+          return
+        }
         eventManager.post(MiraiGroupMessageEvent(
           e.event.group,
           e.event.sender,

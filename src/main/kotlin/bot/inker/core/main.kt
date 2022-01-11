@@ -24,7 +24,7 @@ fun configureLogger():InkConsoleStream{
   val inkConsoleStream = InkConsoleStream(systemStdout,systemStderr) { systemStdout.print(it) }
   System.setOut(inkConsoleStream)
   val stdoutLogger = LoggerFactory.getLogger("stdout")
-  val stderrLogger = LoggerFactory.getLogger("stdout")
+  val stderrLogger = LoggerFactory.getLogger("stderr")
   inkConsoleStream.initLogger(stdoutLogger,stderrLogger)
   System.setOut(inkConsoleStream.logout)
   System.setErr(inkConsoleStream.logerr)

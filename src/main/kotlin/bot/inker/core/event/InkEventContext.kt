@@ -30,23 +30,16 @@ class InkEventContext:EventContext {
     }
 
     override fun <T:Any> getOrSaveOptional(key: EventContextKey<T>, getter: () -> Optional<T>): Optional<T> {
-        return Optional.of(map.getOrPut(key){
-            getter().orElse(null)
-        } as T)
-    }
-
-    override fun <T : Any> getOrSaveNullable(key: EventContextKey<T>, getter: () -> T?): Optional<T> {
-        var value = map.get(key)
-        if (value == null) {
-            value = getter()
+        val value = map.get(key)
+        if(value == null){
+            return Optional.ofNullable(map.put(key,getter().orElse(null)) as T?)
         }else{
             return Optional.of(value as T)
         }
-        if(value == null){
-            return Optional.empty()
-        }else{
-            return Optional.of(map.put(key,value) as T)
-        }
+    }
+
+    override fun <T : Any> getOrSaveNullable(key: EventContextKey<T>, getter: () -> T?): Optional<T> {
+        return getOrSaveOptional(key){ Optional.ofNullable(getter())}
     }
 
     override fun <T : Any> getOr(key: EventContextKey<T>, value:T): T {

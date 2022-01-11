@@ -11,9 +11,8 @@ import bot.inker.api.model.Member
 import bot.inker.api.model.message.PlainTextComponent
 import bot.inker.api.service.CommandService
 import bot.inker.api.service.HelpCommand
-import bot.inker.api.service.PermissionService
-import bot.inker.core.InkFrame
 import bot.inker.core.InkConsoleStream
+import bot.inker.core.InkFrame
 import bot.inker.core.command.ThreadCommandDispatcher
 import bot.inker.core.event.InkCommandExecuteEvent
 import bot.inker.core.event.InkConsoleMessageEvent
@@ -22,8 +21,6 @@ import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.util.post
 import com.eloli.inkcmd.Command
 import com.eloli.inkcmd.builder.ArgumentBuilder
-import com.eloli.inkcmd.builder.LiteralArgumentBuilder
-import com.eloli.inkcmd.builder.ValuedArgumentBuilder
 import com.eloli.inkcmd.context.CommandContext
 import com.eloli.inkcmd.exceptions.CommandSyntaxException
 import com.eloli.inkcmd.terminal.LoliTerminal
@@ -123,23 +120,6 @@ class InkCommandService : CommandService {
   fun onMessage(event: MessageEvent) {
     if (event.message.toString().startsWith('/')) {
       execute(event,event.message.toString().substring(1))
-    }
-  }
-
-  @EventHandler
-  fun registerHelp(event: LifecycleEvent.RegisterCommand) {
-    event.register("help"){
-      describe = "Get list of commands."
-      permission("inkerbot.command.help")
-      executes {
-        getHelp(it)
-      }
-      argument("page",IntegerValueType.integer(1)){
-        describe = "The page of list"
-        executes{
-          getHelp(it)
-        }
-      }
     }
   }
 

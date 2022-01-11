@@ -1,0 +1,12 @@
+{
+  "name": "${pluginName}",
+  "describe": "${pluginDescribe}",
+  "version": "${pluginVersion}",
+  "urls": {
+    "home": "https://github.com/InkerBot/InkerBot",
+    "source": "https://github.com/InkerBot/InkerBot",
+    "issue": "https://github.com/InkerBot/InkerBot/issues"
+  },
+  "main": "bot.inker.core.InkerBotModule",
+  "depends": []
+}

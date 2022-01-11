@@ -13,6 +13,8 @@ import bot.inker.api.plugin.PluginManager
 import bot.inker.api.registry.Registrar
 import bot.inker.api.service.CommandService
 import bot.inker.api.service.DatabaseService
+import bot.inker.api.service.SchedulerService
+import bot.inker.api.tasker.Tasker
 import bot.inker.core.event.lifestyle.InkLifecycleEvent
 import bot.inker.core.registry.InkConsoleMemberRegistry
 import bot.inker.core.service.H2DatabaseService
@@ -37,13 +39,13 @@ import kotlin.reflect.KClass
 @Singleton
 @AutoComponent
 class InkFrame : Frame {
-  override val logger: Logger
-    get() = LoggerFactory.getLogger("inkerbot")
-  override val classLoader: ClassLoader
-    get() = InkerBot::class.java.classLoader
+  override val logger: Logger = LoggerFactory.getLogger("inkerbot")
+  override val classLoader: ClassLoader = InkerBot::class.java.classLoader
 
   @Inject
   override lateinit var self: InkerBotPluginContainer
+  @Inject
+  override lateinit var asyncTasker: Tasker
   override val storagePath: Path = File("./storage").toPath()
   override val configPath: Path = File("./config").toPath()
 
@@ -119,18 +121,11 @@ class InkFrame : Frame {
       }
     }
   }
-
-  @Inject
-  private lateinit var setting: InkSetting
-
   @Inject
   private lateinit var pluginManager: PluginManager
 
   @Inject
   private lateinit var eventManager: EventManager
-
-  @Inject
-  private lateinit var serviceManager: InkServiceManager
 
   @EventHandler(order = Order.PRE)
   fun loadAllPlugins(event: InkLifecycleEvent.Construction) {
@@ -148,16 +143,6 @@ class InkFrame : Frame {
 
     pluginManager.load()
     pluginManager.enable()
-  }
-
-  @EventHandler
-  fun onRegisterCommand(e: LifecycleEvent.RegisterCommand) {
-    e.register(
-      LiteralArgumentBuilder.literal<MessageEvent>("stop")
-      .describe("Stop InkerBot")
-      .executes { throw UserInterruptException("stop") }
-      .build()
-    )
   }
 
   @EventHandler

@@ -40,10 +40,10 @@ class InkConsoleStream private constructor(
 
     fun initLogger(stdoutLogger:Logger, stderrLogger:Logger){
         logout = TextStreamPrintStream{
-            stdoutLogger.info(it.substring(0,it.length-1))
+            stdoutLogger.info("{}",it.substring(0,it.length-1))
         }
         logerr = TextStreamPrintStream{
-            stderrLogger.info(it.substring(0,it.length-1))
+            stderrLogger.warn("{}",it.substring(0,it.length-1))
         }
     }
 

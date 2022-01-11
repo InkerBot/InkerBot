@@ -6,6 +6,7 @@ plugins {
 
 group = "bot.inker"
 version = "1.0-SNAPSHOT"
+description = "A modern bot framework"
 // version = "1.0-SNAPSHOT-${System.currentTimeMillis()}"
 
 subprojects {
@@ -54,6 +55,16 @@ dependencies {
 
 tasks.withType<Test> {
   useJUnitPlatform()
+}
+
+tasks.processResources {
+  filesMatching("META-INF/plugin.json") {
+    expand(mapOf(
+      "pluginName" to project.name,
+      "pluginVersion" to project.version,
+      "pluginDescribe" to project.description
+    ))
+  }
 }
 
 tasks.bootRepo {

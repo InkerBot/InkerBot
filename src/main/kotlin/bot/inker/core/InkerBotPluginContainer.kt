@@ -3,9 +3,11 @@ package bot.inker.core
 import bot.inker.api.InkerBot
 import bot.inker.api.plugin.PluginContainer
 import bot.inker.api.plugin.PluginMeta
+import bot.inker.core.util.ReadPluginJson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
+import java.io.InputStreamReader
 import java.net.URL
 import java.net.URLClassLoader
 import java.nio.file.Path
@@ -14,17 +16,11 @@ import javax.inject.Singleton
 @Singleton
 class InkerBotPluginContainer : PluginContainer {
   override val name: String = "inkerbot"
-  override val meta: PluginMeta = PluginMeta.builder {
-    name("inkerbot")
-    describe("inkerbot core plugin")
-    version("1.0-SNAPSHOT")
-    urls {
-      home("https://github.com/InkerBot")
-      source("https://github.com/InkerBot/InkerBot")
-      issue("https://github.com/InkerBot/InkerBot/issues")
-    }
-    main("bot.inker.core.InkerBotModule")
-  }.build()
+  override val meta: PluginMeta = ReadPluginJson.read(
+    InputStreamReader(
+      InkerBot::class.java.classLoader.getResourceAsStream("META-INF/plugin.json")!!
+    )
+  )
   override val loader: ClassLoader = InkerBot::class.java.classLoader
   override val logger: Logger = LoggerFactory.getLogger("plugin@inkerbot")
   override val dataPath: Path = File("./storage/inkerbot").toPath()

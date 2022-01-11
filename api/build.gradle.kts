@@ -3,7 +3,7 @@ version = rootProject.version
 
 dependencies {
   api(kotlin("stdlib"))
-  api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2")
+  api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0")
   api("com.google.inject:guice:5.0.1")
   api("com.google.guava:guava:31.0.1-jre")
   api("org.apache.commons:commons-text:1.9")
@@ -15,6 +15,7 @@ dependencies {
   api("com.eloli.command:terminal:1.0-SNAPSHOT")
   api("com.eloli.command:ktdsl:1.0-SNAPSHOT")
   api("org.reflections:reflections:0.10.2")
+  api("org.quartz-scheduler:quartz:2.3.2")
 }
 repositories {
   mavenCentral()

@@ -1,4 +1,5 @@
 ### InkerBot, a bot.
+I stand with public domain.
 
 Hello, I'm InkerBot. I will try my best to help you.
 

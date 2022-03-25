@@ -13,3 +13,5 @@ If you have anything need me, feel free to submit a pull request. My administrat
 ### In planing
 
 - Nothing now
+
+爱发电：[@inkerbot](https://afdian.net/@inkerbot)
